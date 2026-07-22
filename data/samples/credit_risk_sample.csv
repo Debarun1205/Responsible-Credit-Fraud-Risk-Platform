@@ -1,9 +1,9 @@
 loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,annual_inc,verification_status,purpose,dti,delinq_2yrs,open_acc,pub_rec,revol_bal,revol_util,total_acc,loan_status
-4480, 60 months,24.06,175.9,A,Teacher,10+ years,OWN,26776.09,Source Verified,moving,10.41,0,13,1,31579,68.0,29,Fully Paid
+4480, 60 months,24.06,175.9,A,Teacher,10+ years,OWN,26776.09,Source Verified,moving,10.41,0,13,1,31579,68.0,29,Charged Off
 31184, 36 months,25.64,1250.45,C,Sales Associate,10+ years,MORTGAGE,161463.31,Not Verified,car,12.9,0,20,0,38832,18.1,13,Fully Paid
 26528, 36 months,8.48,837.18,A,Manager,2 years,MORTGAGE,133532.53,Not Verified,home_improvement,9.7,0,21,0,26102,67.5,36,Fully Paid
 18116, 60 months,17.88,653.85,B,Manager,1 year,MORTGAGE,47700.46,Source Verified,medical,19.19,0,16,0,40525,26.3,5,Fully Paid
-17887, 60 months,7.76,558.54,A,Manager,5 years,RENT,34675.36,Verified,vacation,27.33,0,16,0,11080,35.5,11,Fully Paid
+17887, 60 months,7.76,558.54,A,Manager,5 years,RENT,34675.36,Verified,vacation,27.33,0,16,0,11080,35.5,11,Charged Off
 34485, 60 months,20.56,1291.45,C,Nurse,< 1 year,OWN,49365.32,Not Verified,credit_card,9.13,0,21,1,35585,34.9,7,Fully Paid
 4351, 36 months,11.68,143.85,B,Self-employed,< 1 year,MORTGAGE,176804.35,Verified,debt_consolidation,13.23,1,16,0,2292,71.7,21,Fully Paid
 28197, 60 months,20.27,1051.78,C,Cook,3 years,RENT,93369.7,Verified,small_business,37.22,0,23,0,5139,46.7,46,Fully Paid
@@ -13,14 +13,14 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 39049, 36 months,26.09,1575.18,C,Engineer,1 year,RENT,43220.84,Not Verified,vacation,6.02,0,4,0,30170,21.4,7,Fully Paid
 29694, 60 months,10.53,965.55,C,Teacher,2 years,RENT,171363.91,Not Verified,medical,1.89,0,12,0,34743,90.0,23,Fully Paid
 30684, 36 months,6.15,935.55,C,Teacher,< 1 year,OTHER,68214.82,Not Verified,small_business,5.53,1,7,0,12278,34.3,46,Fully Paid
-28981, 60 months,17.9,1046.28,D,Manager,3 years,MORTGAGE,112482.75,Source Verified,debt_consolidation,36.75,0,11,0,8913,3.9,10,Fully Paid
+28981, 60 months,17.9,1046.28,D,Manager,3 years,MORTGAGE,112482.75,Source Verified,debt_consolidation,36.75,0,11,0,8913,3.9,10,Charged Off
 31656, 36 months,13.72,1077.63,B,Engineer,3 years,MORTGAGE,131964.15,Verified,vacation,0.37,0,12,0,2127,49.5,8,Fully Paid
 21015, 36 months,24.14,826.02,G,Driver,1 year,OTHER,123877.3,Source Verified,vacation,7.53,0,16,1,43238,12.4,51,Fully Paid
 5996, 60 months,23.65,234.14,A,Sales Associate,1 year,OWN,170495.11,Verified,major_purchase,1.25,1,23,0,11179,23.8,37,Fully Paid
 33750, 36 months,12.5,1129.06,E,Accountant,5 years,RENT,43750.24,Not Verified,medical,4.43,0,21,0,28758,74.7,23,Fully Paid
 18565, 36 months,26.93,757.22,C,Cook,1 year,RENT,101336.44,Source Verified,moving,24.81,2,10,0,22744,13.1,46,Fully Paid
 20513, 60 months,11.9,680.35,B,Administrative Assistant,< 1 year,OWN,84645.5,Source Verified,car,9.67,0,9,0,8117,80.7,51,Fully Paid
-15461, 36 months,16.99,551.15,D,Accountant,< 1 year,RENT,95867.0,Source Verified,credit_card,22.77,0,19,0,20696,93.7,24,Fully Paid
+15461, 36 months,16.99,551.15,D,Accountant,< 1 year,RENT,95867.0,Source Verified,credit_card,22.77,0,19,0,20696,93.7,24,Charged Off
 8119, 60 months,11.11,266.23,A,Accountant,10+ years,MORTGAGE,39074.8,Not Verified,car,23.61,0,4,0,4160,60.7,35,Fully Paid
 37143, 36 months,26.55,1507.42,D,Driver,2 years,RENT,41455.14,Source Verified,other,33.98,0,14,0,8833,71.0,5,Fully Paid
 31481, 60 months,9.04,1001.67,C,Nurse,< 1 year,RENT,64492.09,Not Verified,moving,0.19,0,11,0,6984,71.4,21,Fully Paid
@@ -30,13 +30,13 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 22271, 60 months,25.54,891.86,B,Engineer,< 1 year,MORTGAGE,121540.66,Not Verified,car,30.92,0,6,0,21799,51.9,58,Fully Paid
 18293, 36 months,22.29,701.37,E,Administrative Assistant,5 years,RENT,85889.74,Verified,home_improvement,34.22,0,17,0,10067,53.3,19,Fully Paid
 18567, 60 months,25.52,743.34,D,,5 years,MORTGAGE,85405.3,Verified,small_business,10.17,0,6,0,30429,17.8,26,Fully Paid
-9862, 36 months,25.58,395.14,D,Driver,5 years,MORTGAGE,54820.56,Source Verified,home_improvement,36.75,0,17,1,46478,61.3,15,Fully Paid
+9862, 36 months,25.58,395.14,D,Driver,5 years,MORTGAGE,54820.56,Source Verified,home_improvement,36.75,0,17,1,46478,61.3,15,Charged Off
 4593, 36 months,17.08,163.94,B,Self-employed,1 year,MORTGAGE,114129.0,Not Verified,small_business,18.18,0,5,0,26629,1.4,32,Fully Paid
 22628, 60 months,12.47,756.66,D,Driver,1 year,MORTGAGE,70726.55,Verified,small_business,24.14,0,11,1,893,92.8,11,Fully Paid
-35627, 60 months,22.82,1375.77,F,Manager,10+ years,RENT,25769.57,Source Verified,debt_consolidation,39.39,0,20,0,15181,26.5,26,Fully Paid
+35627, 60 months,22.82,1375.77,F,Manager,10+ years,RENT,25769.57,Source Verified,debt_consolidation,39.39,0,20,0,15181,26.5,26,Charged Off
 3488, 36 months,20.32,130.2,A,Teacher,5 years,RENT,86944.01,Verified,moving,14.46,0,7,0,46248,4.0,35,Fully Paid
 34473, 60 months,13.78,1174.53,B,Manager,< 1 year,RENT,95861.23,Source Verified,major_purchase,32.53,0,19,0,25917,10.8,38,Fully Paid
-33277, 36 months,7.44,1034.2,B,,5 years,OTHER,56094.86,Verified,other,12.74,1,18,0,47596,24.0,37,Fully Paid
+33277, 36 months,7.44,1034.2,B,,5 years,OTHER,56094.86,Verified,other,12.74,1,18,0,47596,24.0,37,Charged Off
 11793, 36 months,22.25,451.91,B,Driver,5 years,MORTGAGE,111593.27,Not Verified,credit_card,31.97,0,22,0,25463,27.4,17,Fully Paid
 25634, 36 months,11.26,842.38,D,Sales Associate,3 years,RENT,110523.5,Not Verified,car,24.03,0,5,0,602,3.3,48,Fully Paid
 7443, 36 months,26.57,302.15,C,Engineer,3 years,OWN,132320.35,Not Verified,credit_card,8.65,0,18,0,43652,27.9,43,Fully Paid
@@ -61,19 +61,19 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 27638, 60 months,16.79,982.48,F,,5 years,RENT,38537.08,Source Verified,moving,39.67,0,12,0,20862,43.4,58,Fully Paid
 36978, 36 months,21.06,1394.29,D,Driver,2 years,MORTGAGE,31529.46,Not Verified,moving,0.16,2,23,0,31908,76.7,32,Fully Paid
 30045, 36 months,18.49,1093.6,C,Accountant,< 1 year,RENT,154718.91,Not Verified,credit_card,0.66,0,11,0,28592,80.6,27,Fully Paid
-15299, 60 months,9.83,492.44,D,Administrative Assistant,2 years,RENT,28890.87,Verified,major_purchase,39.72,0,24,0,25088,30.8,15,Fully Paid
-38732, 36 months,23.55,1510.43,G,Accountant,1 year,MORTGAGE,64897.83,Source Verified,medical,23.39,1,3,0,7678,92.9,34,Fully Paid
+15299, 60 months,9.83,492.44,D,Administrative Assistant,2 years,RENT,28890.87,Verified,major_purchase,39.72,0,24,0,25088,30.8,15,Charged Off
+38732, 36 months,23.55,1510.43,G,Accountant,1 year,MORTGAGE,64897.83,Source Verified,medical,23.39,1,3,0,7678,92.9,34,Charged Off
 17023, 36 months,21.54,646.07,C,Engineer,5 years,RENT,73460.81,Source Verified,home_improvement,5.08,0,18,0,33133,9.4,55,Fully Paid
-13707, 36 months,22.07,523.97,C,Sales Associate,5 years,RENT,47679.11,Source Verified,credit_card,35.89,0,15,0,36988,99.4,31,Fully Paid
-36315, 60 months,8.28,1142.68,F,Driver,< 1 year,RENT,70222.94,Verified,credit_card,35.22,0,7,0,35442,77.0,24,Fully Paid
+13707, 36 months,22.07,523.97,C,Sales Associate,5 years,RENT,47679.11,Source Verified,credit_card,35.89,0,15,0,36988,99.4,31,Charged Off
+36315, 60 months,8.28,1142.68,F,Driver,< 1 year,RENT,70222.94,Verified,credit_card,35.22,0,7,0,35442,77.0,24,Charged Off
 15447, 36 months,8.11,484.84,B,Teacher,5 years,MORTGAGE,138830.81,Verified,moving,21.45,0,7,1,3750,9.3,10,Fully Paid
-3977, 60 months,26.36,161.0,E,Nurse,< 1 year,RENT,22349.25,Source Verified,car,24.87,0,18,0,35144,65.6,26,Fully Paid
+3977, 60 months,26.36,161.0,E,Nurse,< 1 year,RENT,22349.25,Source Verified,car,24.87,0,18,0,35144,65.6,26,Charged Off
 19312, 36 months,14.33,663.14,A,Administrative Assistant,3 years,RENT,152347.75,Source Verified,home_improvement,10.93,1,16,0,36489,3.4,18,Fully Paid
 32031, 60 months,12.13,1065.88,C,Self-employed,2 years,RENT,157047.68,Not Verified,moving,2.02,1,16,0,9170,77.0,58,Fully Paid
 8389, 60 months,16.39,296.55,D,Manager,1 year,RENT,79561.85,Source Verified,car,23.78,0,3,0,42448,79.9,34,Fully Paid
 19054, 36 months,20.35,711.52,C,Manager,2 years,RENT,44578.06,Source Verified,vacation,11.79,1,15,0,26192,60.2,12,Fully Paid
 6066, 60 months,26.99,247.61,C,Teacher,1 year,RENT,116134.47,Source Verified,other,26.54,0,24,0,23623,85.7,8,Fully Paid
-27772, 36 months,11.8,919.78,C,Administrative Assistant,5 years,RENT,39147.61,Not Verified,vacation,33.45,1,2,0,36136,9.8,51,Fully Paid
+27772, 36 months,11.8,919.78,C,Administrative Assistant,5 years,RENT,39147.61,Not Verified,vacation,33.45,1,2,0,36136,9.8,51,Charged Off
 19552, 36 months,26.29,790.79,B,Sales Associate,10+ years,OWN,78387.1,Source Verified,credit_card,0.73,1,12,0,25491,27.6,56,Fully Paid
 13877, 60 months,5.86,421.29,B,Sales Associate,5 years,MORTGAGE,173348.67,Source Verified,moving,23.83,0,13,0,27237,41.4,46,Fully Paid
 9849, 60 months,17.9,355.57,B,Teacher,2 years,RENT,179274.32,Verified,small_business,9.25,0,22,0,15610,4.2,11,Fully Paid
@@ -83,14 +83,14 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 18048, 36 months,14.81,623.96,E,Cook,3 years,MORTGAGE,132865.02,Source Verified,major_purchase,22.14,0,3,0,36656,42.5,47,Fully Paid
 7266, 36 months,27.23,297.53,B,Manager,2 years,RENT,82054.67,Verified,other,15.85,1,20,1,1166,87.9,51,Fully Paid
 33474, 36 months,18.83,1224.15,C,Administrative Assistant,2 years,OWN,122542.18,Not Verified,credit_card,27.1,0,20,0,18449,27.0,10,Fully Paid
-25560, 60 months,26.48,1036.38,C,Accountant,2 years,RENT,21716.42,Verified,debt_consolidation,29.03,1,18,0,48499,89.4,13,Fully Paid
-28310, 36 months,23.56,1104.15,B,Accountant,3 years,RENT,53449.23,Verified,debt_consolidation,22.68,0,16,0,8740,42.6,54,Fully Paid
+25560, 60 months,26.48,1036.38,C,Accountant,2 years,RENT,21716.42,Verified,debt_consolidation,29.03,1,18,0,48499,89.4,13,Charged Off
+28310, 36 months,23.56,1104.15,B,Accountant,3 years,RENT,53449.23,Verified,debt_consolidation,22.68,0,16,0,8740,42.6,54,Charged Off
 4791, 60 months,15.91,168.22,D,Nurse,5 years,RENT,104014.13,Verified,vacation,30.34,1,19,0,18849,32.8,56,Fully Paid
 13182, 36 months,23.11,511.03,C,Self-employed,2 years,MORTGAGE,46200.21,Source Verified,major_purchase,39.34,0,19,0,10978,50.3,44,Fully Paid
-30945, 36 months,5.7,937.21,A,,5 years,RENT,46545.1,Verified,major_purchase,16.77,1,22,1,36411,41.8,10,Fully Paid
+30945, 36 months,5.7,937.21,A,,5 years,RENT,46545.1,Verified,major_purchase,16.77,1,22,1,36411,41.8,10,Charged Off
 33458, 36 months,7.78,1045.06,G,Engineer,5 years,MORTGAGE,153808.69,Source Verified,car,20.58,0,11,1,23196,25.7,8,Fully Paid
 17973, 36 months,24.13,706.36,E,Manager,2 years,RENT,178261.28,Not Verified,major_purchase,0.5,0,12,0,29655,50.3,8,Fully Paid
-32385, 36 months,23.39,1260.21,D,Self-employed,10+ years,RENT,108955.11,Not Verified,medical,31.84,0,16,0,47128,15.2,43,Fully Paid
+32385, 36 months,23.39,1260.21,D,Self-employed,10+ years,RENT,108955.11,Not Verified,medical,31.84,0,16,0,47128,15.2,43,Charged Off
 33825, 36 months,10.58,1100.67,E,Self-employed,1 year,MORTGAGE,154251.16,Verified,debt_consolidation,20.81,1,6,0,26052,35.2,51,Fully Paid
 16111, 60 months,17.35,577.21,F,Driver,10+ years,MORTGAGE,178451.47,Verified,credit_card,16.32,1,21,1,36707,56.6,39,Fully Paid
 36025, 60 months,19.06,1321.63,B,Accountant,1 year,RENT,42655.34,Verified,other,3.76,0,19,0,4895,41.3,19,Fully Paid
@@ -105,19 +105,19 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 1287, 36 months,10.93,42.09,B,Nurse,3 years,RENT,165136.58,Verified,small_business,36.5,0,24,0,12084,17.0,22,Fully Paid
 32076, 36 months,10.67,1045.12,B,Engineer,3 years,RENT,27143.85,Source Verified,major_purchase,8.49,0,18,0,29491,81.8,55,Fully Paid
 31690, 60 months,22.23,1214.03,C,Engineer,5 years,OTHER,57256.37,Source Verified,medical,18.79,0,10,0,30933,58.4,43,Fully Paid
-31434, 36 months,23.84,1230.61,C,Nurse,1 year,MORTGAGE,66729.49,Verified,vacation,29.34,3,15,0,23873,26.3,15,Fully Paid
+31434, 36 months,23.84,1230.61,C,Nurse,1 year,MORTGAGE,66729.49,Verified,vacation,29.34,3,15,0,23873,26.3,15,Charged Off
 26929, 36 months,7.69,840.01,F,Sales Associate,5 years,RENT,98431.61,Verified,other,35.13,0,11,0,46333,93.0,57,Fully Paid
 19391, 36 months,6.81,597.05,E,Sales Associate,1 year,RENT,113831.23,Source Verified,home_improvement,15.16,0,16,0,6205,11.5,8,Fully Paid
 28501, 36 months,18.79,1041.71,F,Driver,5 years,MORTGAGE,98926.4,Source Verified,medical,20.68,0,20,0,12894,56.4,37,Fully Paid
 11807, 36 months,8.62,373.37,E,Accountant,1 year,RENT,33458.45,Verified,debt_consolidation,29.67,0,10,0,4751,72.1,15,Fully Paid
-31448, 60 months,24.02,1234.13,G,Self-employed,5 years,OWN,58986.79,Source Verified,car,29.25,0,13,0,34646,5.9,41,Fully Paid
+31448, 60 months,24.02,1234.13,G,Self-employed,5 years,OWN,58986.79,Source Verified,car,29.25,0,13,0,34646,5.9,41,Charged Off
 22670, 36 months,12.34,756.66,C,Administrative Assistant,5 years,MORTGAGE,154974.14,Source Verified,credit_card,31.32,0,3,0,32200,59.8,27,Fully Paid
 18897, 36 months,8.57,597.14,A,Sales Associate,1 year,OWN,122014.19,Source Verified,debt_consolidation,22.8,1,18,0,49365,81.6,29,Fully Paid
 20718, 60 months,26.21,837.06,A,Self-employed,3 years,RENT,123863.85,Not Verified,car,4.18,0,13,0,27115,6.8,41,Fully Paid
 23180, 36 months,9.06,737.77,B,Driver,2 years,RENT,127232.52,Verified,credit_card,36.16,0,12,0,7529,51.2,46,Fully Paid
 2453, 36 months,11.76,81.19,B,Nurse,1 year,RENT,142064.48,Source Verified,major_purchase,34.62,0,14,1,22544,25.9,25,Fully Paid
-6452, 36 months,8.79,204.54,B,Sales Associate,3 years,OWN,29297.36,Verified,credit_card,31.92,0,6,0,4420,66.3,59,Fully Paid
-10573, 60 months,7.92,330.93,F,Administrative Assistant,10+ years,MORTGAGE,78657.34,Not Verified,moving,3.99,0,15,0,33545,11.9,32,Fully Paid
+6452, 36 months,8.79,204.54,B,Sales Associate,3 years,OWN,29297.36,Verified,credit_card,31.92,0,6,0,4420,66.3,59,Charged Off
+10573, 60 months,7.92,330.93,F,Administrative Assistant,10+ years,MORTGAGE,78657.34,Not Verified,moving,3.99,0,15,0,33545,11.9,32,Charged Off
 5466, 60 months,5.78,165.74,B,Self-employed,< 1 year,RENT,106324.39,Verified,moving,8.18,0,19,0,33709,93.7,13,Fully Paid
 18144, 60 months,6.56,556.59,F,Engineer,10+ years,MORTGAGE,74153.04,Not Verified,medical,29.74,1,10,0,42882,89.5,5,Fully Paid
 27067, 60 months,9.26,864.0,D,Manager,10+ years,MORTGAGE,155116.62,Verified,vacation,0.93,0,5,0,16986,18.6,16,Fully Paid
@@ -143,8 +143,8 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 9368, 36 months,6.48,287.03,C,Teacher,< 1 year,OWN,91713.17,Not Verified,medical,38.2,0,8,1,47648,19.0,40,Fully Paid
 11785, 36 months,26.29,476.65,B,Teacher,3 years,MORTGAGE,69205.61,Not Verified,major_purchase,9.74,0,9,1,12570,89.8,20,Fully Paid
 16932, 60 months,7.55,527.08,B,Sales Associate,3 years,MORTGAGE,115756.35,Not Verified,small_business,3.96,0,14,0,32539,25.3,48,Fully Paid
-39713, 36 months,24.45,1567.45,C,Nurse,10+ years,OTHER,21170.31,Verified,small_business,30.14,0,6,0,9484,70.5,48,Fully Paid
-34282, 36 months,25.79,1377.41,A,Driver,5 years,RENT,64483.54,Verified,other,35.24,0,22,0,5794,6.7,39,Fully Paid
+39713, 36 months,24.45,1567.45,C,Nurse,10+ years,OTHER,21170.31,Verified,small_business,30.14,0,6,0,9484,70.5,48,Charged Off
+34282, 36 months,25.79,1377.41,A,Driver,5 years,RENT,64483.54,Verified,other,35.24,0,22,0,5794,6.7,39,Charged Off
 2353, 60 months,27.54,96.74,D,Sales Associate,< 1 year,MORTGAGE,132485.35,Verified,car,11.12,1,18,0,17651,3.9,57,Fully Paid
 10123, 60 months,23.51,394.55,F,Sales Associate,3 years,MORTGAGE,121403.16,Source Verified,debt_consolidation,8.08,0,19,0,44254,65.4,34,Fully Paid
 33045, 36 months,22.99,1278.99,C,Accountant,5 years,MORTGAGE,177088.95,Verified,other,7.43,0,5,1,34473,33.9,6,Fully Paid
@@ -160,15 +160,15 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 20695, 60 months,11.35,680.96,B,Manager,3 years,RENT,137186.16,Source Verified,car,10.1,1,10,0,27117,29.7,35,Fully Paid
 31572, 36 months,8.47,996.21,B,Sales Associate,5 years,RENT,90414.19,Verified,vacation,11.79,1,8,0,14329,6.1,42,Fully Paid
 39848, 60 months,16.15,1403.89,G,Sales Associate,< 1 year,MORTGAGE,108496.61,Verified,vacation,30.59,1,7,0,22736,36.9,23,Fully Paid
-26908, 60 months,14.76,929.62,A,Accountant,10+ years,OWN,124656.39,Not Verified,moving,35.07,0,9,0,6989,25.5,9,Fully Paid
+26908, 60 months,14.76,929.62,A,Accountant,10+ years,OWN,124656.39,Not Verified,moving,35.07,0,9,0,6989,25.5,9,Charged Off
 16958, 36 months,10.58,551.82,E,Self-employed,1 year,RENT,175170.42,Not Verified,car,36.07,0,10,0,10498,38.6,26,Fully Paid
 16849, 60 months,13.64,572.92,C,Accountant,10+ years,MORTGAGE,177532.49,Verified,medical,39.38,1,4,0,22053,19.7,37,Fully Paid
-17300, 36 months,13.62,588.09,D,Manager,2 years,RENT,66116.52,Not Verified,small_business,39.29,1,18,0,34501,26.2,15,Fully Paid
+17300, 36 months,13.62,588.09,D,Manager,2 years,RENT,66116.52,Not Verified,small_business,39.29,1,18,0,34501,26.2,15,Charged Off
 32746, 36 months,12.73,1099.09,D,Sales Associate,10+ years,MORTGAGE,137400.56,Source Verified,moving,38.12,1,14,0,20717,62.7,17,Fully Paid
 13527, 36 months,13.91,461.73,E,Cook,10+ years,RENT,139997.37,Source Verified,small_business,2.87,0,21,0,27085,38.8,5,Fully Paid
 7511, 36 months,20.87,282.48,B,Sales Associate,5 years,RENT,75438.86,Verified,home_improvement,5.51,1,18,0,26093,34.5,45,Fully Paid
 14037, 60 months,12.04,466.5,A,Accountant,10+ years,RENT,39819.16,Source Verified,vacation,12.18,0,5,0,13443,53.4,54,Fully Paid
-1885, 36 months,26.84,76.79,C,Cook,3 years,OWN,26551.51,Source Verified,medical,22.12,0,3,0,13981,77.2,50,Fully Paid
+1885, 36 months,26.84,76.79,C,Cook,3 years,OWN,26551.51,Source Verified,medical,22.12,0,3,0,13981,77.2,50,Charged Off
 5139, 36 months,26.1,207.33,B,Sales Associate,10+ years,OWN,144374.9,Source Verified,small_business,3.88,0,11,0,21286,37.9,25,Fully Paid
 4511, 60 months,16.22,159.08,A,Cook,1 year,MORTGAGE,98351.96,Verified,vacation,33.83,0,13,0,1602,58.8,37,Fully Paid
 31090, 60 months,12.75,1043.81,B,Engineer,< 1 year,OWN,177686.43,Verified,other,24.67,0,7,0,34269,96.6,57,Fully Paid
@@ -177,14 +177,14 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 19013, 60 months,20.11,707.66,A,Engineer,5 years,RENT,85852.16,Verified,major_purchase,10.13,0,19,1,18685,79.4,23,Fully Paid
 28965, 60 months,23.56,1129.7,F,Teacher,3 years,MORTGAGE,146989.14,Source Verified,moving,6.41,0,4,0,16435,5.9,44,Fully Paid
 7289, 60 months,17.39,261.29,B,Self-employed,3 years,RENT,33571.08,Not Verified,other,34.08,0,20,0,32566,42.9,29,Fully Paid
-36124, 60 months,19.67,1336.43,G,Driver,3 years,OTHER,108873.87,Source Verified,medical,23.37,0,6,0,37986,69.8,51,Fully Paid
+36124, 60 months,19.67,1336.43,G,Driver,3 years,OTHER,108873.87,Source Verified,medical,23.37,0,6,0,37986,69.8,51,Charged Off
 20540, 36 months,11.84,680.65,G,Teacher,10+ years,RENT,148329.57,Verified,moving,29.41,2,12,0,5433,98.7,52,Fully Paid
 37584, 60 months,21.98,1434.96,A,Self-employed,10+ years,RENT,167952.27,Not Verified,medical,11.84,0,12,0,20665,45.8,6,Fully Paid
 6940, 36 months,9.89,223.58,D,Self-employed,< 1 year,RENT,151613.29,Source Verified,vacation,14.85,0,20,0,688,9.3,44,Fully Paid
-20395, 36 months,21.07,769.12,C,Teacher,3 years,RENT,25915.32,Not Verified,major_purchase,16.19,0,8,0,22612,56.2,25,Fully Paid
+20395, 36 months,21.07,769.12,C,Teacher,3 years,RENT,25915.32,Not Verified,major_purchase,16.19,0,8,0,22612,56.2,25,Charged Off
 28156, 60 months,24.84,1117.1,D,Manager,2 years,MORTGAGE,79632.37,Verified,small_business,30.4,0,7,0,12414,12.7,33,Fully Paid
 20329, 60 months,8.3,639.85,A,Engineer,5 years,OWN,27791.76,Source Verified,major_purchase,30.89,0,9,0,16790,75.2,19,Fully Paid
-18400, 36 months,19.25,676.8,B,Driver,3 years,RENT,37485.17,Verified,other,8.27,0,10,0,22827,50.8,25,Fully Paid
+18400, 36 months,19.25,676.8,B,Driver,3 years,RENT,37485.17,Verified,other,8.27,0,10,0,22827,50.8,25,Charged Off
 7482, 36 months,7.46,232.6,A,Cook,10+ years,MORTGAGE,128048.9,Source Verified,car,37.66,0,6,0,16186,72.3,23,Fully Paid
 15859, 60 months,21.77,603.78,C,Engineer,2 years,MORTGAGE,134121.31,Verified,credit_card,4.83,0,6,0,19703,86.9,7,Fully Paid
 10311, 36 months,7.22,319.41,G,Accountant,5 years,MORTGAGE,143795.31,Not Verified,debt_consolidation,35.84,0,7,0,38238,62.9,48,Fully Paid
@@ -195,7 +195,7 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 15110, 36 months,18.78,552.19,A,Driver,10+ years,OWN,57525.62,Source Verified,moving,16.54,0,7,0,26522,3.6,25,Fully Paid
 38428, 36 months,23.07,1488.94,E,Sales Associate,10+ years,MORTGAGE,119503.64,Not Verified,medical,17.99,0,22,0,10264,55.6,55,Fully Paid
 4418, 60 months,23.35,171.83,B,,2 years,RENT,157300.05,Source Verified,other,9.81,1,19,0,29675,21.6,56,Fully Paid
-14361, 60 months,26.77,584.52,A,Teacher,2 years,MORTGAGE,20720.02,Source Verified,car,28.41,2,6,0,7246,86.0,25,Fully Paid
+14361, 60 months,26.77,584.52,A,Teacher,2 years,MORTGAGE,20720.02,Source Verified,car,28.41,2,6,0,7246,86.0,25,Charged Off
 5602, 60 months,11.05,183.53,C,Sales Associate,< 1 year,OTHER,102340.69,Verified,moving,34.05,0,9,0,1091,64.8,32,Fully Paid
 14218, 60 months,18.69,518.95,F,Manager,10+ years,RENT,128365.98,Source Verified,moving,34.98,0,6,0,31621,42.0,59,Fully Paid
 38514, 36 months,7.46,1197.32,B,Self-employed,< 1 year,MORTGAGE,24737.17,Source Verified,car,13.57,1,8,0,25756,18.8,17,Fully Paid
@@ -219,7 +219,7 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 4759, 60 months,20.54,178.17,F,Manager,10+ years,RENT,179798.94,Not Verified,small_business,6.54,3,16,0,14240,72.9,57,Fully Paid
 18433, 60 months,12.87,619.93,D,Engineer,5 years,RENT,67417.93,Source Verified,debt_consolidation,22.18,0,2,0,38483,94.9,15,Fully Paid
 36201, 36 months,25.69,1452.59,F,Cook,3 years,RENT,85270.71,Source Verified,medical,8.31,1,21,0,39377,75.7,27,Fully Paid
-5975, 36 months,22.61,230.08,F,Nurse,3 years,RENT,41891.4,Not Verified,moving,10.13,0,16,1,25084,47.2,15,Fully Paid
+5975, 36 months,22.61,230.08,F,Nurse,3 years,RENT,41891.4,Not Verified,moving,10.13,0,16,1,25084,47.2,15,Charged Off
 18775, 60 months,11.44,618.59,C,,10+ years,RENT,111979.51,Verified,debt_consolidation,1.2,1,24,0,31617,48.6,7,Fully Paid
 28457, 60 months,13.57,966.66,F,Cook,2 years,RENT,179612.81,Not Verified,debt_consolidation,4.76,0,12,0,13475,43.6,58,Fully Paid
 8892, 36 months,12.44,297.21,C,Teacher,1 year,RENT,132140.96,Verified,small_business,36.67,1,16,0,46458,32.5,55,Fully Paid
@@ -228,20 +228,20 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 32537, 60 months,26.55,1320.49,A,Self-employed,3 years,MORTGAGE,166447.8,Verified,major_purchase,18.6,0,21,0,36856,59.8,40,Fully Paid
 23589, 36 months,15.24,820.5,A,,2 years,MORTGAGE,99506.66,Verified,home_improvement,16.02,0,22,1,2117,89.8,33,Fully Paid
 22329, 36 months,14.0,763.15,B,Self-employed,2 years,MORTGAGE,41498.71,Not Verified,debt_consolidation,21.28,1,13,0,18322,99.5,59,Fully Paid
-7894, 36 months,21.86,300.9,D,Teacher,2 years,RENT,78460.55,Verified,debt_consolidation,7.49,0,20,0,22246,7.9,35,Fully Paid
-19065, 60 months,17.85,687.81,D,Administrative Assistant,10+ years,MORTGAGE,30746.67,Not Verified,debt_consolidation,39.54,0,10,1,47992,38.5,40,Fully Paid
-34407, 60 months,26.55,1396.38,C,Manager,10+ years,RENT,52316.65,Source Verified,car,32.73,1,12,0,27349,18.1,16,Fully Paid
-1761, 36 months,23.01,68.18,A,Teacher,< 1 year,OWN,22827.0,Not Verified,moving,29.66,0,19,0,26808,35.2,46,Fully Paid
-30582, 60 months,16.18,1077.89,D,Cook,< 1 year,RENT,92524.79,Source Verified,major_purchase,18.75,0,3,0,7337,28.7,50,Fully Paid
+7894, 36 months,21.86,300.9,D,Teacher,2 years,RENT,78460.55,Verified,debt_consolidation,7.49,0,20,0,22246,7.9,35,Charged Off
+19065, 60 months,17.85,687.81,D,Administrative Assistant,10+ years,MORTGAGE,30746.67,Not Verified,debt_consolidation,39.54,0,10,1,47992,38.5,40,Charged Off
+34407, 60 months,26.55,1396.38,C,Manager,10+ years,RENT,52316.65,Source Verified,car,32.73,1,12,0,27349,18.1,16,Charged Off
+1761, 36 months,23.01,68.18,A,Teacher,< 1 year,OWN,22827.0,Not Verified,moving,29.66,0,19,0,26808,35.2,46,Charged Off
+30582, 60 months,16.18,1077.89,D,Cook,< 1 year,RENT,92524.79,Source Verified,major_purchase,18.75,0,3,0,7337,28.7,50,Charged Off
 20217, 60 months,13.84,689.4,B,Driver,1 year,OWN,121526.44,Verified,debt_consolidation,6.12,0,18,0,39686,17.5,42,Fully Paid
-29059, 60 months,27.7,1197.28,A,Cook,10+ years,RENT,74926.79,Verified,major_purchase,36.83,0,2,2,16814,76.4,32,Fully Paid
+29059, 60 months,27.7,1197.28,A,Cook,10+ years,RENT,74926.79,Verified,major_purchase,36.83,0,2,2,16814,76.4,32,Charged Off
 26868, 60 months,21.59,1020.41,B,Self-employed,2 years,MORTGAGE,87261.08,Source Verified,other,13.66,0,15,0,4593,49.6,15,Fully Paid
 17851, 36 months,26.89,727.72,B,Teacher,10+ years,MORTGAGE,173473.48,Not Verified,home_improvement,2.0,0,12,0,49382,91.9,6,Fully Paid
 13038, 36 months,7.99,408.5,B,Driver,3 years,MORTGAGE,140314.1,Verified,major_purchase,13.7,0,12,1,9503,3.3,39,Fully Paid
 25465, 60 months,24.61,1007.24,E,Self-employed,3 years,MORTGAGE,106537.06,Source Verified,medical,31.78,0,13,0,811,6.7,42,Fully Paid
-6468, 36 months,19.76,239.58,D,Engineer,1 year,OWN,65526.54,Not Verified,small_business,24.91,0,13,0,3891,40.3,47,Fully Paid
+6468, 36 months,19.76,239.58,D,Engineer,1 year,OWN,65526.54,Not Verified,small_business,24.91,0,13,0,3891,40.3,47,Charged Off
 23779, 36 months,8.07,745.92,D,Driver,2 years,RENT,163519.49,Not Verified,major_purchase,30.03,0,11,0,22625,8.0,57,Fully Paid
-4693, 36 months,18.65,171.2,A,Driver,< 1 year,MORTGAGE,57615.54,Source Verified,major_purchase,31.75,0,12,0,5145,26.3,32,Fully Paid
+4693, 36 months,18.65,171.2,A,Driver,< 1 year,MORTGAGE,57615.54,Source Verified,major_purchase,31.75,0,12,0,5145,26.3,32,Charged Off
 26344, 60 months,20.87,990.75,E,Self-employed,3 years,OWN,72054.84,Verified,major_purchase,8.48,0,15,2,42132,98.6,50,Fully Paid
 25521, 60 months,5.58,771.55,D,Teacher,1 year,RENT,165450.37,Verified,moving,36.95,0,19,0,25622,20.9,44,Fully Paid
 4293, 60 months,15.61,150.1,B,Self-employed,1 year,RENT,104726.73,Source Verified,medical,17.52,0,14,0,16195,19.8,20,Fully Paid
@@ -253,46 +253,46 @@ loan_amnt,term,int_rate,installment,grade,emp_title,emp_length,home_ownership,an
 20265, 36 months,26.15,818.11,A,Nurse,10+ years,OWN,71598.78,Verified,debt_consolidation,18.33,0,7,0,23743,13.9,56,Fully Paid
 8340, 36 months,23.04,323.01,B,Self-employed,3 years,RENT,44870.65,Source Verified,car,5.16,0,6,0,931,42.8,8,Fully Paid
 13864, 36 months,7.81,433.23,A,Driver,3 years,OWN,159890.3,Verified,major_purchase,6.09,0,20,0,6546,69.0,34,Fully Paid
-26763, 60 months,27.93,1106.0,F,Cook,2 years,MORTGAGE,65319.51,Verified,home_improvement,25.29,0,3,0,10374,86.8,47,Fully Paid
+26763, 60 months,27.93,1106.0,F,Cook,2 years,MORTGAGE,65319.51,Verified,home_improvement,25.29,0,3,0,10374,86.8,47,Charged Off
 6636, 60 months,25.26,264.76,B,Manager,3 years,RENT,109838.3,Source Verified,home_improvement,15.72,2,21,0,2586,37.0,40,Fully Paid
 27430, 36 months,11.74,907.67,B,Administrative Assistant,3 years,MORTGAGE,146715.91,Verified,car,36.87,0,19,0,36299,56.8,53,Fully Paid
 5032, 60 months,24.3,198.21,B,Cook,5 years,RENT,145411.86,Verified,medical,12.77,0,24,0,47270,6.9,30,Fully Paid
 7832, 60 months,7.72,244.42,E,,3 years,MORTGAGE,90141.8,Not Verified,car,29.05,1,17,0,49267,17.0,42,Fully Paid
 23918, 60 months,27.98,989.08,C,Manager,3 years,MORTGAGE,96201.17,Verified,home_improvement,18.44,2,22,0,13290,6.9,28,Fully Paid
 31945, 60 months,20.41,1193.87,F,Driver,< 1 year,MORTGAGE,179152.28,Verified,medical,26.4,0,4,0,39437,72.8,52,Fully Paid
-7653, 36 months,20.06,284.65,B,Driver,10+ years,MORTGAGE,127935.6,Not Verified,vacation,23.99,1,22,0,25203,28.8,11,Fully Paid
+7653, 36 months,20.06,284.65,B,Driver,10+ years,MORTGAGE,127935.6,Not Verified,vacation,23.99,1,22,0,25203,28.8,11,Charged Off
 12699, 60 months,7.35,394.14,A,Driver,10+ years,OTHER,150342.15,Source Verified,small_business,18.91,0,5,0,2292,72.4,18,Fully Paid
 37079, 60 months,25.66,1487.23,C,Teacher,1 year,OWN,164408.64,Verified,small_business,38.0,1,9,0,4535,6.6,10,Fully Paid
 39597, 36 months,5.96,1203.9,B,Driver,1 year,MORTGAGE,146014.37,Source Verified,credit_card,13.71,0,4,0,27389,86.3,43,Fully Paid
 23661, 36 months,10.77,772.06,E,Sales Associate,10+ years,MORTGAGE,49628.7,Source Verified,car,7.09,0,11,0,21182,83.6,17,Fully Paid
 18434, 60 months,8.55,582.34,E,Accountant,1 year,RENT,109947.32,Verified,debt_consolidation,27.12,0,19,0,419,8.9,22,Fully Paid
 14527, 60 months,22.93,561.81,C,Nurse,5 years,RENT,36303.07,Source Verified,home_improvement,33.84,1,8,0,46505,2.4,51,Fully Paid
-24885, 36 months,9.8,800.63,G,Engineer,5 years,OWN,124467.54,Source Verified,moving,1.61,0,20,0,36516,5.6,24,Fully Paid
+24885, 36 months,9.8,800.63,G,Engineer,5 years,OWN,124467.54,Source Verified,moving,1.61,0,20,0,36516,5.6,24,Charged Off
 24045, 36 months,25.97,968.4,C,Accountant,10+ years,RENT,172855.91,Verified,debt_consolidation,17.99,0,15,0,25120,85.4,13,Fully Paid
 12495, 60 months,20.2,465.63,B,Teacher,< 1 year,RENT,102037.13,Not Verified,other,35.7,1,16,0,49349,23.5,6,Fully Paid
 1889, 36 months,6.12,57.57,C,Administrative Assistant,2 years,RENT,89275.6,Source Verified,major_purchase,29.98,1,23,0,48556,54.8,17,Fully Paid
-6908, 36 months,5.42,208.34,A,Cook,3 years,MORTGAGE,25734.84,Not Verified,small_business,39.67,2,11,0,48697,42.6,55,Fully Paid
+6908, 36 months,5.42,208.34,A,Cook,3 years,MORTGAGE,25734.84,Not Verified,small_business,39.67,2,11,0,48697,42.6,55,Charged Off
 38383, 60 months,6.47,1175.88,E,Teacher,10+ years,RENT,173563.92,Verified,medical,21.26,1,9,0,12941,79.6,35,Fully Paid
 17308, 60 months,19.05,634.88,A,Teacher,1 year,MORTGAGE,36480.43,Verified,car,26.4,1,24,0,44044,48.9,59,Fully Paid
-19809, 36 months,23.49,771.87,B,Self-employed,1 year,OWN,26572.65,Not Verified,major_purchase,12.1,0,14,0,25227,50.1,16,Fully Paid
+19809, 36 months,23.49,771.87,B,Self-employed,1 year,OWN,26572.65,Not Verified,major_purchase,12.1,0,14,0,25227,50.1,16,Charged Off
 19217, 36 months,10.72,626.59,C,Sales Associate,1 year,MORTGAGE,59370.66,Not Verified,vacation,37.9,2,16,0,36301,98.9,24,Fully Paid
 31526, 36 months,24.58,1246.48,A,Self-employed,5 years,RENT,30484.87,Verified,other,14.65,0,8,0,42976,15.0,13,Fully Paid
 3533, 36 months,6.6,108.44,A,Driver,10+ years,OWN,92818.85,Not Verified,home_improvement,29.54,0,6,0,8166,83.1,26,Fully Paid
 4226, 60 months,23.48,164.65,D,Sales Associate,< 1 year,RENT,102574.05,Verified,moving,16.13,0,5,0,22412,5.2,35,Fully Paid
 11758, 36 months,26.36,475.99,A,Sales Associate,1 year,MORTGAGE,70011.19,Source Verified,small_business,22.47,0,7,0,6444,47.8,49,Fully Paid
-19979, 36 months,22.83,771.61,C,Cook,1 year,RENT,28153.68,Verified,other,28.79,0,6,0,13974,88.6,25,Fully Paid
+19979, 36 months,22.83,771.61,C,Cook,1 year,RENT,28153.68,Verified,other,28.79,0,6,0,13974,88.6,25,Charged Off
 27173, 36 months,21.15,1025.84,B,Manager,10+ years,MORTGAGE,37856.06,Source Verified,home_improvement,20.36,0,19,0,20675,66.5,47,Fully Paid
 20137, 60 months,24.32,793.42,B,Engineer,2 years,RENT,81520.7,Not Verified,home_improvement,36.28,0,3,0,42773,68.5,39,Fully Paid
 18205, 60 months,6.21,555.57,B,Sales Associate,1 year,MORTGAGE,29684.55,Not Verified,moving,16.77,1,16,0,43133,26.3,21,Fully Paid
 37575, 60 months,9.88,1210.32,D,Manager,1 year,RENT,131710.36,Not Verified,moving,25.88,1,23,0,19494,41.9,55,Fully Paid
 7279, 36 months,8.14,228.57,F,Sales Associate,3 years,MORTGAGE,53123.29,Verified,credit_card,13.69,0,19,0,16459,36.7,28,Fully Paid
-23297, 60 months,16.75,827.71,A,Driver,2 years,OWN,68331.45,Not Verified,medical,16.33,0,11,0,26536,52.1,13,Fully Paid
+23297, 60 months,16.75,827.71,A,Driver,2 years,OWN,68331.45,Not Verified,medical,16.33,0,11,0,26536,52.1,13,Charged Off
 22147, 36 months,22.22,848.33,F,Cook,< 1 year,RENT,83060.12,Source Verified,small_business,17.6,0,3,1,45593,46.2,57,Fully Paid
 19466, 60 months,19.6,719.47,C,Teacher,5 years,RENT,86657.54,Source Verified,car,5.03,1,21,0,48826,32.7,55,Fully Paid
 32496, 60 months,24.62,1285.51,C,Self-employed,2 years,RENT,20265.71,Not Verified,medical,3.67,0,2,0,11338,30.5,7,Fully Paid
-11412, 60 months,8.82,361.94,D,Self-employed,1 year,RENT,37931.26,Source Verified,other,26.7,2,17,0,9324,25.1,54,Fully Paid
-38197, 36 months,21.98,1458.37,D,Cook,5 years,OTHER,158042.33,Source Verified,other,26.22,0,17,0,35338,36.5,57,Fully Paid
-13931, 60 months,9.68,447.42,E,,5 years,OWN,20197.29,Source Verified,car,26.52,0,6,0,15070,15.0,50,Fully Paid
+11412, 60 months,8.82,361.94,D,Self-employed,1 year,RENT,37931.26,Source Verified,other,26.7,2,17,0,9324,25.1,54,Charged Off
+38197, 36 months,21.98,1458.37,D,Cook,5 years,OTHER,158042.33,Source Verified,other,26.22,0,17,0,35338,36.5,57,Charged Off
+13931, 60 months,9.68,447.42,E,,5 years,OWN,20197.29,Source Verified,car,26.52,0,6,0,15070,15.0,50,Charged Off
 22255, 60 months,11.45,733.35,C,Engineer,< 1 year,RENT,101306.78,Source Verified,car,0.79,0,19,0,9988,87.2,19,Fully Paid
 21306, 60 months,21.41,807.2,C,Self-employed,< 1 year,OTHER,98320.32,Not Verified,vacation,13.06,0,6,0,1553,60.2,39,Fully Paid
 34141, 36 months,27.55,1403.91,B,Cook,< 1 year,RENT,73295.07,Source Verified,credit_card,7.91,0,7,0,20160,13.4,34,Fully Paid
