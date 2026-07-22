@@ -21,6 +21,7 @@ import pandas as pd
 import streamlit as st
 
 from agent.claude_agent import run as run_agent
+from agent.dashboard import render_full_dashboard
 from agent.render import render_full_profile
 from credit_risk.features import build_features_generic, build_target_generic
 from credit_risk.llm_features import add_llm_features_generic
@@ -142,9 +143,37 @@ def show_schema_help(sample_path: str, context: str) -> None:
 
 # --- Tabs ---
 
-tab_eda, tab_credit, tab_fraud, tab_fairness = st.tabs(
-    ["1. EDA agent", "2. Credit risk", "3. Fraud detection", "4. Fairness audit"]
+tab_dashboard, tab_eda, tab_credit, tab_fraud, tab_fairness = st.tabs(
+    ["📊 Dashboard", "1. EDA agent", "2. Credit risk", "3. Fraud detection", "4. Fairness audit"]
 )
+
+with tab_dashboard:
+    st.subheader("Visual overview — no ML background needed")
+    st.caption(
+        "Upload any CSV to see its shape, target balance, distributions, and correlations "
+        "as charts. This tab never calls Claude/the LLM — it's pure chart generation, free to run."
+    )
+    dashboard_upload = st.file_uploader("CSV file", type="csv", key="dashboard_upload")
+    dashboard_df, dashboard_source_note = load_dataset(dashboard_upload, "data/samples/credit_risk_sample.csv")
+    st.caption(dashboard_source_note)
+
+    dashboard_columns = list(dashboard_df.columns)
+    dashboard_target_default = (
+        dashboard_columns.index("loan_status")
+        if "loan_status" in dashboard_columns
+        else (dashboard_columns.index("Class") if "Class" in dashboard_columns else 0)
+    )
+    dashboard_target_col = st.selectbox(
+        "Which column is the outcome you care about? (optional — pick 'None' to skip)",
+        ["(none)"] + dashboard_columns,
+        index=dashboard_target_default + 1,
+        key="dashboard_target",
+    )
+
+    render_full_dashboard(
+        dashboard_df,
+        target_col=None if dashboard_target_col == "(none)" else dashboard_target_col,
+    )
 
 with tab_eda:
     st.subheader("Upload a dataset to auto-profile")
