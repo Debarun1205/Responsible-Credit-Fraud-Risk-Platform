@@ -4,6 +4,7 @@ scikit-learn
 scipy
 joblib
 streamlit
+plotly
 anthropic
 kagglehub
 tabulate
