@@ -1,0 +1,7 @@
+# Full datasets are downloaded locally via download_data.py and never committed.
+full/
+*.zip
+
+# Keep the small sample files tracked.
+!samples/
+!samples/*.csv
