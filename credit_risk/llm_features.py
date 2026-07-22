@@ -82,3 +82,54 @@ if __name__ == "__main__":
     demo = add_llm_features(sample.head(5))
     print("LLM available:", llm_client.is_available())
     print(demo)
+
+
+# --- Generic version: works on any text column names, not just emp_title/purpose ---
+
+GENERIC_SYSTEM_PROMPT = """You are extracting structured risk signals from \
+free-text fields in a loan or credit application. You will be given an \
+arbitrary set of named text fields (field names vary by dataset). Respond \
+with ONLY a JSON object (no markdown, no preamble) with these exact keys:
+- "text_risk_signal": one of "high", "medium", "low" — your best-effort \
+overall risk read of the combined text fields
+- "text_specificity": one of "specific", "vague" — whether the text fields \
+describe something concrete and verifiable vs. vague or generic
+- "text_risk_flag": true or false — true if anything in the text raises a \
+notable red flag
+"""
+
+
+def _fallback_features_generic(text_fields: dict) -> dict:
+    h = int(hashlib.sha256(str(sorted(text_fields.items())).encode()).hexdigest(), 16)
+    return {
+        "text_risk_signal": ["low", "medium", "high"][h % 3],
+        "text_specificity": ["vague", "specific"][h % 2],
+        "text_risk_flag": bool(h % 5 == 0),
+    }
+
+
+def extract_llm_features_generic(text_fields: dict) -> dict:
+    """text_fields: {column_name: value} for however many text columns the user picked."""
+    if not llm_client.is_available():
+        return _fallback_features_generic(text_fields)
+
+    field_str = "\n".join(f'{name}: "{value}"' for name, value in text_fields.items())
+    return llm_client.complete_json(field_str, system=GENERIC_SYSTEM_PROMPT, max_tokens=200)
+
+
+def add_llm_features_generic(df: pd.DataFrame, text_cols: list[str]) -> pd.DataFrame:
+    """
+    Generic counterpart to add_llm_features — takes any list of text column
+    names instead of assuming emp_title/purpose. Returns an empty dataframe
+    (0 columns) if text_cols is empty, so it's safe to concat unconditionally.
+    """
+    if not text_cols:
+        return pd.DataFrame(index=df.index)
+
+    records = [
+        extract_llm_features_generic({col: row.get(col, "") for col in text_cols})
+        for _, row in df.iterrows()
+    ]
+    llm_df = pd.DataFrame(records)
+    llm_df["text_risk_flag"] = llm_df["text_risk_flag"].astype(int)
+    return pd.get_dummies(llm_df, columns=["text_risk_signal", "text_specificity"])
