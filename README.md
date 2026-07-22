@@ -6,7 +6,7 @@ An end-to-end system that combines **agentic AI**, **machine learning**, and **d
 
 > **Project status:** ✅ Deployed and running. All four modules are built and wired into a single Streamlit app. LLM-powered features (agentic EDA summary, LLM feature extraction, fraud explanations) run in a graceful fallback/demo mode until an `ANTHROPIC_API_KEY` is configured — see [Progress](#progress) and [Running locally](#running-locally).
 >
-> **Live demo:** `<add your Streamlit Cloud URL here once deployed>`
+> **Live demo:** `https://responsible-credit-fraud-risk-platform.streamlit.app/`
 
 ---
 
