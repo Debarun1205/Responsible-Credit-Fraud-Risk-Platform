@@ -55,6 +55,15 @@ with tab_credit:
         raw = pd.read_csv("data/samples/credit_risk_sample.csv")
         y = build_target(raw)
 
+        if y.nunique() < 2:
+            st.error(
+                f"loan_status only has one outcome present in this file ({raw['loan_status'].unique().tolist()}). "
+                "A classifier needs both 'Charged Off' and 'Fully Paid' rows to learn anything. "
+                "Check that data/samples/credit_risk_sample.csv wasn't overwritten with an older, "
+                "single-class version."
+            )
+            st.stop()
+
         X_structured = build_structured_features(raw)
         with st.spinner("Training baseline model..."):
             from sklearn.ensemble import RandomForestClassifier
