@@ -29,6 +29,14 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), "model.pkl")
 
 
 def train_and_eval(X: pd.DataFrame, y: pd.Series, label: str) -> RandomForestClassifier:
+    if y.nunique() < 2:
+        raise ValueError(
+            f"[{label}] Target column has only one class present ({y.unique().tolist()}). "
+            "The model can't learn to distinguish outcomes with only one class in the data — "
+            "check that data/samples/credit_risk_sample.csv actually contains both "
+            "'Charged Off' and 'Fully Paid' rows in loan_status."
+        )
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.25, random_state=42, stratify=y
     )
