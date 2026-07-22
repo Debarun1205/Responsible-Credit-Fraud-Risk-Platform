@@ -12,6 +12,7 @@ import pandas as pd
 import streamlit as st
 
 from agent.claude_agent import run as run_agent
+from agent.render import render_full_profile
 from credit_risk.features import build_structured_features, build_target
 from credit_risk.llm_features import add_llm_features
 from fairness.audit import generate_report
@@ -40,9 +41,12 @@ with tab_eda:
         df = pd.read_csv(uploaded)
         st.dataframe(df.head())
         if st.button("Run EDA agent"):
-            with st.spinner("Agent is planning and running its analysis..."):
-                summary = run_agent(df)
-            st.markdown(summary)
+            if llm_client.is_available():
+                with st.spinner("Agent is planning and running its analysis..."):
+                    summary = run_agent(df)
+                st.markdown(summary)
+            else:
+                render_full_profile(df)
 
 with tab_credit:
     st.subheader("Credit risk scoring")
