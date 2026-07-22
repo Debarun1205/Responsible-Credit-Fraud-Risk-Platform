@@ -1,11 +1,12 @@
-# Responsible-Credit-Fraud-Risk-Platform
-A deployed app where a user uploads a lending or transactions dataset, and the system (a) auto-explores it, (b) scores credit risk using LLM-augmented features, (c) flags fraud/anomalies with plain-English explanations, and (d) audits the resulting model for fairness across subgroups — all in one pipeline, with one dashboard.
+[README (1).md](https://github.com/user-attachments/files/30262913/README.1.md)
 
 # Responsible Credit & Fraud Risk Platform
 
 An end-to-end system that combines **agentic AI**, **machine learning**, and **data science** into a single deployed application for credit risk scoring, fraud detection, and fairness auditing.
 
-> **Project status:** 🚧 Planning / early build phase. This README documents the intended architecture and roadmap. Modules will be checked off as they're implemented — see [Progress](#progress) below.
+> **Project status:** ✅ Deployed and running. All four modules are built and wired into a single Streamlit app. LLM-powered features (agentic EDA summary, LLM feature extraction, fraud explanations) run in a graceful fallback/demo mode until an `ANTHROPIC_API_KEY` is configured — see [Progress](#progress) and [Running locally](#running-locally).
+>
+> **Live demo:** `<add your Streamlit Cloud URL here once deployed>`
 
 ---
 
@@ -20,7 +21,6 @@ Given a lending or transactions dataset, the platform:
 
 All four pieces are served from one dashboard rather than four separate scripts.
 
-
 ## Where this sits across AI, ML, and DS
 
 | Domain | What lives here |
@@ -29,16 +29,16 @@ All four pieces are served from one dashboard rather than four separate scripts.
 | **Machine Learning** | The credit risk classifier and the fraud/anomaly detection model, including their training, evaluation, and metrics (ROC-AUC, precision/recall) |
 | **Data Science** | The exploratory profiling output, the fairness audit (subgroup rate testing, FDR-controlled significance), and the reporting/visualization layer |
 
-This split is explained in more depth in [`docs/domain_mapping.md`](docs/domain_mapping.md) *(planned)*.
+This split is explained in more depth in [`docs/domain_mapping.md`](docs/domain_mapping.md).
 
 ## Architecture
 
 ```
-                    ┌───────────────────────────────┐
-                    │         Data layer            │
-                    │ lending data · transactions   │
-                    │  · demographic columns        │
-                    └───────────────┬───────────────┘
+                    ┌──────────────────────────────┐
+                    │         Data layer           │
+                    │ lending data · transactions  │
+                    │  · demographic columns       │
+                    └───────────────┬──────────────┘
                                     ▼
                     ┌───────────────────────────────┐
                     │   AI / agent layer (Claude)   │
@@ -73,27 +73,34 @@ This split is explained in more depth in [`docs/domain_mapping.md`](docs/domain_
 
 ```
 risk-platform/
-├── data/                  # raw + sample datasets
-├── agent/                 # Module: EDA agent
-│   ├── profiler.py
-│   ├── claude_agent.py
-│   └── report_template.md
-├── credit_risk/           # Module: credit risk model
+├── data/
+│   ├── samples/            # small synthetic samples, checked into git
+│   │   ├── credit_risk_sample.csv
+│   │   └── fraud_sample.csv
+│   ├── full/                # created by download_data.py, gitignored
+│   ├── download_data.py
+│   ├── .gitignore
+│   └── README.md
+├── docs/
+│   └── domain_mapping.md    # detailed AI/ML/DS module breakdown
+├── agent/                   # Module: EDA agent
+│   ├── profiler.py           # deterministic profiling functions (no LLM)
+│   ├── claude_agent.py        # Claude tool-use planning loop
+│   └── render.py               # renders profiler output as charts/tables
+│                                # when no API key is set (no LLM, no cost)
+├── credit_risk/             # Module: credit risk model
 │   ├── features.py
-│   ├── llm_features.py    # shared with fraud module
-│   ├── train.py
-│   └── model.pkl
-├── fraud/                 # Module: fraud detection
+│   ├── llm_features.py       # shared pattern with fraud module
+│   └── train.py
+├── fraud/                    # Module: fraud detection
 │   ├── model.py
-│   ├── explain.py
-│   └── model.pkl
-├── fairness/              # Module: fairness audit
-│   ├── audit.py
-│   └── report.py
+│   └── explain.py
+├── fairness/                 # Module: fairness audit
+│   └── audit.py
 ├── shared/
-│   ├── llm_client.py      # single wrapper around the Anthropic API
+│   ├── llm_client.py         # single wrapper around the Anthropic API
 │   └── schema.py
-├── app.py                 # Streamlit dashboard
+├── app.py                     # Streamlit dashboard, tabs per module
 ├── requirements.txt
 └── README.md
 ```
@@ -117,31 +124,28 @@ risk-platform/
 
 ## Progress
 
-- [ ] Credit risk baseline model (structured features only)
-- [ ] LLM-augmented feature extraction for credit risk
-- [ ] Fairness audit applied to credit risk model
-- [ ] Fraud detection model
-- [ ] LLM-based fraud flag explanations
-- [ ] EDA agent (standalone)
-- [ ] Unified Streamlit dashboard
-- [ ] Deployment
+- [x] Credit risk baseline model (structured features only)
+- [x] LLM-augmented feature extraction for credit risk (runs in fallback mode without an API key; verify with a real key before reporting final numbers)
+- [x] Fairness audit applied to credit risk model
+- [x] Fraud detection model
+- [x] LLM-based fraud flag explanations (fallback mode without an API key)
+- [x] EDA agent (standalone, with a non-LLM fallback dashboard view)
+- [x] Unified Streamlit dashboard
+- [x] Deployment (Streamlit Community Cloud)
+- [ ] Full datasets downloaded and models retrained on real data (currently running on the synthetic samples in `data/samples/`)
+- [ ] `ANTHROPIC_API_KEY` configured in production so the LLM-powered modules run live rather than in fallback mode
+- [ ] Final results written up below from real data + a live API key
 
 ## Results
 
-*(To be filled in as each module is completed — baseline vs. LLM-augmented AUC, fairness audit findings, fraud model precision/recall, etc. Numbers will be reported honestly, including any module that doesn't improve on baseline.)*
+**Current numbers are from the synthetic sample data in `data/samples/`, with LLM-powered modules running in fallback (no API key) mode. Replace this section once the full datasets are downloaded and a real `ANTHROPIC_API_KEY` is configured — these are placeholders to confirm the pipeline works, not final findings.**
 
-## Running locally
+| Model | Metric | Value |
+|---|---|---|
+| Credit risk — baseline (structured only) | ROC-AUC | 0.860 |
+| Credit risk — augmented (structured + LLM features, fallback mode) | ROC-AUC | 0.853 |
+| Fraud detection | ROC-AUC / Precision / Recall | see `fraud/model.py` output on real data |
+| Fairness audit | Subgroup FPR/FNR + FDR-controlled significance | see `fairness/audit.py` output on real data |
 
-```bash
-git clone https://github.com/<your-username>/risk-platform.git
-cd risk-platform
-pip install -r requirements.txt
-streamlit run app.py
-```
 
-You'll need an `ANTHROPIC_API_KEY` environment variable set for the LLM-powered modules.
-
-## Author
-
-Debarun Banerjee — B.Tech CSE (AI & ML), Narula Institute of Technology
 [LinkedIn](https://www.linkedin.com/in/debarun-banerjee-b8524a37b) · [Portfolio](https://debarun.base44.app)
