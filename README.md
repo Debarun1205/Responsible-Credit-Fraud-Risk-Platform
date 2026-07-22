@@ -1,4 +1,4 @@
-[README (1).md](https://github.com/user-attachments/files/30262913/README.1.md)
+
 
 # Responsible Credit & Fraud Risk Platform
 
