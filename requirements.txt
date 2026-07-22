@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn
+scipy
+joblib
+streamlit
+anthropic
+kagglehub
+tabulate
