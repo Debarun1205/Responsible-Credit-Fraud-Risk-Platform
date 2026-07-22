@@ -52,9 +52,8 @@ st.title("Responsible Credit & Fraud Risk Platform")
 
 if not llm_client.is_available():
     st.warning(
-        "No ANTHROPIC_API_KEY set — LLM-powered features (agentic EDA, LLM feature "
-        "extraction, fraud explanations) will run in fallback/demo mode. "
-        "Set the key in Settings → Secrets to see live results."
+        "No ANTHROPIC_API_KEY set — LLM Features aren't used(due to lack of tokens and their high cost)"
+        
     )
 
 
