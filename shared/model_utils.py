@@ -51,6 +51,24 @@ def train_and_compare(X: pd.DataFrame, y: pd.Series, test_size: float = 0.25, ra
       - a dict of {name: (fitted_model, X_test, y_test, y_proba)} for downstream
         use (feature importance, threshold tuning, download).
     """
+    class_counts = y.value_counts()
+    if len(class_counts) < 2:
+        raise ValueError(
+            f"The target column has only one class present ({class_counts.index.tolist()}). "
+            "A classifier needs at least two outcomes to learn anything — check your target "
+            "column and positive-value selection."
+        )
+    min_count = class_counts.min()
+    min_needed = max(2, round(1 / test_size))  # roughly what a stratified split needs per class
+    if min_count < min_needed:
+        raise ValueError(
+            f"The smallest class in the target column has only {min_count} row(s) "
+            f"({dict(class_counts)}). That's too few to split into train/test sets reliably — "
+            "this usually means the wrong column was picked as the target (e.g. an ID or "
+            "timestamp column instead of a real label). Double-check your target column and "
+            "positive-value selection above."
+        )
+
     # XGBoost rejects column names containing [, ], or < — these show up
     # naturally from one-hot encoding category values like "< 1 year".
     # Sanitize once here so all models see consistent, safe column names.
