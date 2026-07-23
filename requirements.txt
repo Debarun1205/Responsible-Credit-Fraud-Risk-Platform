@@ -5,6 +5,7 @@ scipy
 joblib
 streamlit
 plotly
+xgboost
 anthropic
 kagglehub
 tabulate
