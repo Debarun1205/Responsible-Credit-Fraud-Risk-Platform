@@ -15,19 +15,30 @@ Run with:
 
 from __future__ import annotations
 
+import io
 import os
 
+import joblib
 import pandas as pd
 import streamlit as st
 
 from agent.claude_agent import run as run_agent
-from agent.dashboard import render_full_dashboard
+from agent.dashboard import (
+    render_feature_importance,
+    render_full_dashboard,
+    render_threshold_tradeoff,
+)
 from agent.render import render_full_profile
 from credit_risk.features import build_features_generic, build_target_generic
 from credit_risk.llm_features import add_llm_features_generic
 from fairness.audit import generate_report
-from fraud.model import train_and_eval as train_fraud_model
 from shared import llm_client
+from shared.model_utils import (
+    feature_importance_df,
+    metrics_at_threshold,
+    precision_recall_at_thresholds,
+    train_and_compare,
+)
 
 st.set_page_config(page_title="Responsible Credit & Fraud Risk Platform", layout="wide")
 
@@ -50,10 +61,26 @@ with st.sidebar:
 
 st.title("Responsible Credit & Fraud Risk Platform")
 
+with st.expander("ℹ️ How to use this app (click to expand)"):
+    st.markdown(
+        """
+1. **📊 Dashboard** — upload any CSV to see its shape, target balance, and distributions as charts. No ML background needed here.
+2. **1. EDA agent** — an automated data-quality profile (missingness, correlations). Uses Claude if an API key is set, otherwise shows the same info as plain charts/tables.
+3. **2. Credit risk** and **3. Fraud detection** — pick your target column, then train and compare three model types at once (Logistic Regression, Random Forest, XGBoost). See which features drove the predictions, and tune the decision threshold to trade off precision vs. recall.
+4. **4. Fairness audit** — checks whether the model's error rates differ meaningfully across a demographic column or proxy, with statistically controlled significance testing.
+
+Every tab works on the built-in sample data by default — just click the train/run button — or upload your own CSV with a similar shape.
+        """
+    )
+
+if "training_history" not in st.session_state:
+    st.session_state.training_history = []
+
 if not llm_client.is_available():
     st.warning(
-        "No ANTHROPIC_API_KEY set — LLM Features aren't used(due to lack of tokens and their high cost)"
-        
+        "No ANTHROPIC_API_KEY set — LLM-powered features (agentic EDA, LLM feature "
+        "extraction, fraud explanations) will run in fallback/demo mode. "
+        "Set the key in Settings → Secrets to see live results."
     )
 
 
@@ -214,34 +241,49 @@ with tab_credit:
             st.error("No feature columns selected. Pick at least one categorical or numeric column above.")
             st.stop()
 
-        from sklearn.ensemble import RandomForestClassifier
-        from sklearn.metrics import roc_auc_score
-        from sklearn.model_selection import train_test_split
-
-        with st.spinner("Training baseline model..."):
-            X_train, X_test, y_train, y_test = train_test_split(
-                X_structured, y, test_size=0.25, random_state=42, stratify=y
-            )
-            baseline = RandomForestClassifier(n_estimators=300, max_depth=8, random_state=42)
-            baseline.fit(X_train, y_train)
-            baseline_auc = roc_auc_score(y_test, baseline.predict_proba(X_test)[:, 1])
-
-        with st.spinner("Extracting LLM features and training augmented model..."):
+        with st.spinner("Extracting LLM features (if any text columns were selected)..."):
             X_llm = add_llm_features_generic(raw, choices["text_cols"])
-            X_combined = pd.concat([X_structured.reset_index(drop=True), X_llm.reset_index(drop=True)], axis=1)
-            X_train2, X_test2, y_train2, y_test2 = train_test_split(
-                X_combined, y, test_size=0.25, random_state=42, stratify=y
-            )
-            augmented = RandomForestClassifier(n_estimators=300, max_depth=8, random_state=42)
-            augmented.fit(X_train2, y_train2)
-            augmented_auc = roc_auc_score(y_test2, augmented.predict_proba(X_test2)[:, 1])
+            X = pd.concat([X_structured.reset_index(drop=True), X_llm.reset_index(drop=True)], axis=1)
 
-        col1, col2 = st.columns(2)
-        col1.metric("Baseline ROC-AUC", f"{baseline_auc:.4f}")
-        delta = None if not choices["text_cols"] else f"{augmented_auc - baseline_auc:+.4f}"
-        col2.metric("LLM-augmented ROC-AUC", f"{augmented_auc:.4f}", delta=delta)
-        if not choices["text_cols"]:
-            st.caption("No text columns selected for LLM extraction, so this matches the baseline.")
+        with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
+            comparison_df, fitted = train_and_compare(X, y)
+
+        st.markdown("#### Model comparison")
+        st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
+
+        best_name = comparison_df.iloc[0]["model"]
+        best_model, X_test, y_test, y_proba = fitted[best_name]
+        st.caption(f"Best model by ROC-AUC: **{best_name}**. Details below are for this model.")
+
+        st.session_state.training_history.append(
+            {"tab": "Credit risk", "model": best_name, "roc_auc": comparison_df.iloc[0]["roc_auc"], "rows": len(raw)}
+        )
+
+        render_feature_importance(feature_importance_df(best_model, list(X_test.columns)), best_name)
+
+        st.markdown("#### Adjust the decision threshold")
+        threshold = st.slider("Classification threshold", 0.05, 0.95, 0.5, 0.05, key="credit_threshold")
+        pr_df = precision_recall_at_thresholds(y_test, y_proba)
+        render_threshold_tradeoff(pr_df, threshold)
+        live_metrics = metrics_at_threshold(y_test, y_proba, threshold)
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Precision", f"{live_metrics['precision']:.3f}")
+        m2.metric("Recall", f"{live_metrics['recall']:.3f}")
+        m3.metric("F1", f"{live_metrics['f1']:.3f}")
+        m4.metric("Flagged rows", live_metrics["flagged_count"])
+
+        model_bytes = io.BytesIO()
+        joblib.dump(best_model, model_bytes)
+        st.download_button(
+            f"⬇ Download trained {best_name} model (.pkl)",
+            model_bytes.getvalue(),
+            file_name="credit_risk_model.pkl",
+            key="download_credit_model",
+        )
+
+    if st.session_state.training_history:
+        with st.expander("📈 Training history this session"):
+            st.dataframe(pd.DataFrame(st.session_state.training_history), use_container_width=True, hide_index=True)
 
 with tab_fraud:
     st.subheader("Fraud / anomaly detection")
@@ -278,18 +320,57 @@ with tab_fraud:
             st.error("No numeric feature columns found besides the target.")
             st.stop()
 
-        with st.spinner("Training fraud model..."):
-            clf = train_fraud_model(X, y)
-        st.success("Model trained — see terminal/logs for precision, recall, ROC-AUC.")
+        with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
+            comparison_df, fitted = train_and_compare(X, y)
+
+        st.markdown("#### Model comparison")
+        st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
+
+        best_name = comparison_df.iloc[0]["model"]
+        best_model, X_test, y_test, y_proba = fitted[best_name]
+        st.caption(f"Best model by ROC-AUC: **{best_name}**. Details below are for this model.")
+
+        st.session_state.training_history.append(
+            {"tab": "Fraud detection", "model": best_name, "roc_auc": comparison_df.iloc[0]["roc_auc"], "rows": len(raw_fraud)}
+        )
+
+        render_feature_importance(feature_importance_df(best_model, list(X_test.columns)), best_name)
+
+        st.markdown("#### Adjust the flagging threshold")
+        threshold = st.slider("Classification threshold", 0.05, 0.95, 0.5, 0.05, key="fraud_threshold")
+        pr_df = precision_recall_at_thresholds(y_test, y_proba)
+        render_threshold_tradeoff(pr_df, threshold)
+        live_metrics = metrics_at_threshold(y_test, y_proba, threshold)
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Precision", f"{live_metrics['precision']:.3f}")
+        m2.metric("Recall", f"{live_metrics['recall']:.3f}")
+        m3.metric("F1", f"{live_metrics['f1']:.3f}")
+        m4.metric("Flagged rows", live_metrics["flagged_count"])
 
         if amount_col:
-            st.write("Sample flag explanation:")
+            st.markdown("#### Sample flag explanation")
             from fraud.explain import explain_flag, top_contributing_features
 
             row = X.iloc[0]
-            top_feats = top_contributing_features(clf, row)
-            st.json(top_feats)
-            st.write(explain_flag(row[amount_col], top_feats))
+            top_feats = top_contributing_features(best_model, row) if hasattr(best_model, "feature_importances_") else {}
+            if top_feats:
+                st.json(top_feats)
+                st.write(explain_flag(row[amount_col], top_feats))
+            else:
+                st.caption(f"{best_name} doesn't expose feature importances, so a per-row explanation isn't available for it.")
+
+        model_bytes = io.BytesIO()
+        joblib.dump(best_model, model_bytes)
+        st.download_button(
+            f"⬇ Download trained {best_name} model (.pkl)",
+            model_bytes.getvalue(),
+            file_name="fraud_model.pkl",
+            key="download_fraud_model",
+        )
+
+    if st.session_state.training_history:
+        with st.expander("📈 Training history this session"):
+            st.dataframe(pd.DataFrame(st.session_state.training_history), use_container_width=True, hide_index=True)
 
 with tab_fairness:
     st.subheader("Fairness audit")
@@ -337,3 +418,9 @@ with tab_fairness:
 
         report = generate_report(y_true, y_pred, raw_fair[group_col], group_label=group_col)
         st.markdown(report)
+        st.download_button(
+            "⬇ Download this fairness report (.md)",
+            report,
+            file_name=f"fairness_report_{group_col}.md",
+            key="download_fairness_report",
+        )
