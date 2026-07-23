@@ -98,6 +98,36 @@ def load_dataset(uploaded_file, default_path: str) -> tuple[pd.DataFrame, str]:
     return df, source_note
 
 
+def _guess_target_column(df: pd.DataFrame, preferred: str | None) -> str:
+    """
+    Picks a sensible default target column instead of blindly falling back
+    to the first column (which breaks badly if that happens to be an
+    ID/timestamp-like column with hundreds of unique values).
+
+    Priority: the caller's preferred name if present -> a common target-like
+    name (Class, target, label, y, outcome) if present -> the lowest-
+    cardinality column in the dataframe, since real target columns are
+    almost always binary/low-cardinality, unlike IDs or continuous fields.
+    """
+    if preferred and preferred in df.columns:
+        return preferred
+
+    for candidate in ["Class", "class", "target", "label", "y", "outcome"]:
+        if candidate in df.columns:
+            return candidate
+
+    nunique = df.nunique()
+    # Prefer a genuinely binary column if one exists — that's what a
+    # classification target almost always looks like.
+    binary_cols = nunique[nunique == 2]
+    if not binary_cols.empty:
+        return binary_cols.index[0]
+
+    # Otherwise, the lowest-cardinality column that isn't constant.
+    candidates = nunique[nunique >= 2]
+    return candidates.idxmin() if not candidates.empty else nunique.idxmin()
+
+
 def column_picker(df: pd.DataFrame, context: str, default_target: str | None = None) -> dict:
     """
     Renders the target/feature/text-column selection UI for an arbitrary
@@ -106,8 +136,16 @@ def column_picker(df: pd.DataFrame, context: str, default_target: str | None = N
     """
     columns = list(df.columns)
 
-    target_default_idx = columns.index(default_target) if default_target in columns else 0
+    guessed_target = _guess_target_column(df, default_target)
+    target_default_idx = columns.index(guessed_target)
     target_col = st.selectbox("Target column (what you're predicting)", columns, index=target_default_idx, key=f"target_{context}")
+
+    if df[target_col].nunique() > 20:
+        st.warning(
+            f"'{target_col}' has {df[target_col].nunique()} unique values — that's unusual for a "
+            "classification target. Double check you've picked the right column; a target should "
+            "typically be binary or have just a few categories."
+        )
 
     unique_values = df[target_col].dropna().unique().tolist()
     positive_value = st.selectbox(
@@ -246,7 +284,11 @@ with tab_credit:
             X = pd.concat([X_structured.reset_index(drop=True), X_llm.reset_index(drop=True)], axis=1)
 
         with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
-            comparison_df, fitted = train_and_compare(X, y)
+            try:
+                comparison_df, fitted = train_and_compare(X, y)
+            except ValueError as e:
+                st.error(str(e))
+                st.stop()
 
         st.markdown("#### Model comparison")
         st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
@@ -295,8 +337,15 @@ with tab_fraud:
     st.caption(source_note_fraud)
 
     fraud_columns = list(raw_fraud.columns)
-    fraud_target_default = fraud_columns.index("Class") if "Class" in fraud_columns else 0
+    fraud_guessed_target = _guess_target_column(raw_fraud, "Class")
+    fraud_target_default = fraud_columns.index(fraud_guessed_target)
     fraud_target_col = st.selectbox("Target column (fraud label)", fraud_columns, index=fraud_target_default, key="fraud_target")
+
+    if raw_fraud[fraud_target_col].nunique() > 20:
+        st.warning(
+            f"'{fraud_target_col}' has {raw_fraud[fraud_target_col].nunique()} unique values — unusual "
+            "for a classification target. Double check this is really the label column."
+        )
 
     numeric_feature_cols = [
         c for c in fraud_columns if c != fraud_target_col and pd.api.types.is_numeric_dtype(raw_fraud[c])
@@ -321,7 +370,11 @@ with tab_fraud:
             st.stop()
 
         with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
-            comparison_df, fitted = train_and_compare(X, y)
+            try:
+                comparison_df, fitted = train_and_compare(X, y)
+            except ValueError as e:
+                st.error(str(e))
+                st.stop()
 
         st.markdown("#### Model comparison")
         st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
