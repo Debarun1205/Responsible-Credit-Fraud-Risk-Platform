@@ -130,6 +130,42 @@ def render_correlation_heatmap(df: pd.DataFrame) -> None:
     )
 
 
+def render_feature_importance(importance_df: pd.DataFrame | None, model_name: str) -> None:
+    """Horizontal bar chart of top features. Renders a plain message if the model has no importance to show."""
+    st.markdown(f"#### What drove {model_name}'s predictions")
+    if importance_df is None or importance_df.empty:
+        st.write("This model type doesn't expose feature importances.")
+        return
+
+    fig = px.bar(
+        importance_df.sort_values("importance"),
+        x="importance",
+        y="feature",
+        orientation="h",
+        color_discrete_sequence=["#F77F00"],
+    )
+    fig.update_layout(margin=dict(t=10, b=10, l=10, r=10), height=max(280, 24 * len(importance_df)))
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def render_threshold_tradeoff(pr_df: pd.DataFrame, current_threshold: float) -> None:
+    """Line chart of precision/recall/F1 across thresholds, with a marker at the currently selected one."""
+    st.markdown("#### Precision vs. recall trade-off across thresholds")
+    fig = go.Figure()
+    for col_name, color in [("precision", "#06D6A0"), ("recall", "#EF476F"), ("f1", "#118AB2")]:
+        fig.add_trace(go.Scatter(x=pr_df["threshold"], y=pr_df[col_name], name=col_name, mode="lines+markers", line=dict(color=color)))
+    fig.add_vline(x=current_threshold, line_dash="dash", line_color="white", opacity=0.5)
+    fig.update_layout(
+        margin=dict(t=10, b=10, l=10, r=10), height=340,
+        xaxis_title="threshold", yaxis_title="score", legend=dict(orientation="h", y=1.1),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption(
+        "Moving the threshold left flags more cases (higher recall, more false alarms). "
+        "Moving it right flags fewer, more confident cases (higher precision, more misses)."
+    )
+
+
 def render_full_dashboard(df: pd.DataFrame, target_col: str | None = None) -> None:
     """
     Renders the entire visual dashboard in one call: metrics, target
