@@ -79,9 +79,10 @@ with st.expander("ℹ️ How to use this app (click to expand)"):
     st.markdown(
         """
 1. **📊 Dashboard** — upload any CSV to see its shape, target balance, and distributions as charts. No ML background needed here.
-2. **1. EDA agent** — an automated data-quality profile (missingness, correlations). Uses Claude if an API key is set, otherwise shows the same info as plain charts/tables.
-3. **2. Credit risk** and **3. Fraud detection** — pick your target column, then train and compare three model types at once (Logistic Regression, Random Forest, XGBoost). See which features drove the predictions, and tune the decision threshold to trade off precision vs. recall.
-4. **4. Fairness audit** — checks whether the model's error rates differ meaningfully across a demographic column or proxy, with statistically controlled significance testing.
+2. ** EDA agent** — an automated data-quality profile (missingness, correlations). Uses Claude if an API key is set, otherwise shows the same info as plain charts/tables.
+3. ** Credit risk** and 
+4. ** Fraud detection** — pick your target column, then train and compare three model types at once (Logistic Regression, Random Forest, XGBoost). See which features drove the predictions, and tune the decision threshold to trade off precision vs. recall.
+5. ** Fairness audit** — checks whether the model's error rates differ meaningfully across a demographic column or proxy, with statistically controlled significance testing.
 
 Every tab works on the built-in sample data by default — just click the train/run button — or upload your own CSV with a similar shape.
         """
@@ -92,9 +93,8 @@ if "training_history" not in st.session_state:
 
 if not llm_client.is_available():
     st.warning(
-        "No ANTHROPIC_API_KEY set — LLM-powered features (agentic EDA, LLM feature "
-        "extraction, fraud explanations) will run in fallback/demo mode. "
-        "Set the key in Settings → Secrets to see live results."
+        "No API_KEY set because of lack of tokens and their high cost, so the LLM Driven predictions are on fallback/demo mode. "
+        
     )
 
 
