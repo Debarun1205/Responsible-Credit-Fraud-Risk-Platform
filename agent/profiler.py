@@ -27,7 +27,7 @@ def numeric_summary(df: pd.DataFrame) -> dict:
 
 
 def categorical_summary(df: pd.DataFrame, max_categories: int = 10) -> dict:
-    cat_df = df.select_dtypes(include=["object", "category"])
+    cat_df = df.select_dtypes(include=["object", "category", "str"])
     return {
         col: cat_df[col].value_counts().head(max_categories).to_dict()
         for col in cat_df.columns
