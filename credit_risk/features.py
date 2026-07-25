@@ -73,13 +73,29 @@ def build_target_generic(df: pd.DataFrame, target_col: str, positive_value) -> p
 
 
 def build_features_generic(
-    df: pd.DataFrame, categorical_cols: list[str], numeric_cols: list[str]
+    df: pd.DataFrame, categorical_cols: list[str], numeric_cols: list[str], max_onehot_columns: int = 500
 ) -> pd.DataFrame:
     """
     Same logic as build_structured_features, but the column lists are passed
     in rather than hardcoded, so it works on any dataframe regardless of
     column names.
+
+    Raises a clear error instead of silently building a huge, memory-crashing
+    matrix if the selected categorical columns would one-hot encode into an
+    unreasonable number of columns (e.g. a high-cardinality free-text column
+    like a real emp_title field with tens of thousands of unique values).
     """
+    if categorical_cols:
+        estimated_cols = sum(df[c].nunique() for c in categorical_cols)
+        if estimated_cols > max_onehot_columns:
+            raise ValueError(
+                f"Selected categorical columns would one-hot encode into ~{estimated_cols:,} columns, "
+                f"which is over the safety limit of {max_onehot_columns}. This usually means a "
+                "high-cardinality free-text column (like a real 'emp_title' field) got included by "
+                "mistake — remove it from 'Categorical columns' and use it as an LLM text column "
+                "instead if you want to use it at all."
+            )
+
     if numeric_cols:
         numeric = df[numeric_cols].apply(pd.to_numeric, errors="coerce")
         numeric = numeric.fillna(numeric.median(numeric_only=True))
