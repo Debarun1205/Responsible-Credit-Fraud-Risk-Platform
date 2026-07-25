@@ -165,7 +165,7 @@ def show_schema_help(sample_path: str, context: str) -> None:
                 {
                     "column": sample_df.columns,
                     "dtype": [str(sample_df[c].dtype) for c in sample_df.columns],
-                    "example value": [example_row[c] for c in sample_df.columns],
+                    "example value": [str(example_row[c]) for c in sample_df.columns],
                 }
             ),
             use_container_width=True,
