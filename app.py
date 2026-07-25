@@ -99,6 +99,12 @@ def load_dataset(uploaded_file, default_path: str) -> tuple[pd.DataFrame, str]:
     return df, source_note
 
 
+CARDINALITY_THRESHOLD = 50  # columns with more unique values than this default OUT of
+                            # one-hot encoding -- real free-text fields like emp_title
+                            # can have tens of thousands of unique values, which would
+                            # one-hot encode into an enormous, memory-crashing matrix.
+
+
 def column_picker(df: pd.DataFrame, context: str, default_target: str | None = None) -> dict:
     """
     Renders the target/feature/text-column selection UI for an arbitrary
@@ -128,10 +134,24 @@ def column_picker(df: pd.DataFrame, context: str, default_target: str | None = N
     )
 
     remaining_cols = [c for c in columns if c != target_col]
-    default_categorical = [c for c in remaining_cols if not pd.api.types.is_numeric_dtype(df[c])]
-    default_numeric = [c for c in remaining_cols if pd.api.types.is_numeric_dtype(df[c])]
+    non_numeric_cols = [c for c in remaining_cols if not pd.api.types.is_numeric_dtype(df[c])]
+    numeric_cols_all = [c for c in remaining_cols if pd.api.types.is_numeric_dtype(df[c])]
+
+    # Only low-cardinality non-numeric columns are safe to one-hot encode by
+    # default. High-cardinality free-text columns (like emp_title with real
+    # data) default OUT of one-hot encoding, but stay selectable in the text
+    # extraction step below, which is what they're actually suited for.
+    default_categorical = [c for c in non_numeric_cols if df[c].nunique() <= CARDINALITY_THRESHOLD]
+    default_numeric = numeric_cols_all
+    high_cardinality_cols = [c for c in non_numeric_cols if df[c].nunique() > CARDINALITY_THRESHOLD]
 
     with st.expander("Advanced: adjust feature columns"):
+        if high_cardinality_cols:
+            st.caption(
+                f"⚠️ Excluded from one-hot encoding by default (too many unique values, would create "
+                f"a huge feature matrix): {', '.join(high_cardinality_cols)}. Add them below only if you "
+                "really intend to one-hot encode them — otherwise use them as LLM text columns instead."
+            )
         categorical_cols = st.multiselect(
             "Categorical columns (one-hot encoded)", remaining_cols, default=default_categorical, key=f"cat_{context}"
         )
@@ -140,10 +160,19 @@ def column_picker(df: pd.DataFrame, context: str, default_target: str | None = N
         )
         text_cols = st.multiselect(
             "Text columns to send through LLM feature extraction (optional)",
-            categorical_cols,
-            default=[c for c in categorical_cols if c in ("emp_title", "purpose")],
+            non_numeric_cols,
+            default=[c for c in non_numeric_cols if c in ("emp_title", "purpose")],
             key=f"text_{context}",
             help="These get passed to Claude for structured signal extraction. Leave empty to skip the LLM step entirely.",
+        )
+
+    high_card_selected = [c for c in categorical_cols if df[c].nunique() > CARDINALITY_THRESHOLD]
+    if high_card_selected:
+        st.warning(
+            f"You've selected {high_card_selected} for one-hot encoding, but they have very high "
+            "cardinality. This can create an enormous feature matrix and may crash or run out of "
+            "memory. Consider removing them from 'Categorical columns' and using them as LLM text "
+            "columns instead."
         )
 
     return {
@@ -245,7 +274,11 @@ with tab_credit:
             )
             st.stop()
 
-        X_structured = build_features_generic(raw, choices["categorical_cols"], choices["numeric_cols"])
+        try:
+            X_structured = build_features_generic(raw, choices["categorical_cols"], choices["numeric_cols"])
+        except ValueError as e:
+            st.error(str(e))
+            st.stop()
         if X_structured.shape[1] == 0:
             st.error("No feature columns selected. Pick at least one categorical or numeric column above.")
             st.stop()
@@ -426,7 +459,11 @@ with tab_fairness:
             st.error(f"'{fair_choices['target_col']}' only has one value present after filtering.")
             st.stop()
 
-        X_structured = build_features_generic(raw_fair, fair_choices["categorical_cols"], fair_choices["numeric_cols"])
+        try:
+            X_structured = build_features_generic(raw_fair, fair_choices["categorical_cols"], fair_choices["numeric_cols"])
+        except ValueError as e:
+            st.error(str(e))
+            st.stop()
         X_llm = add_llm_features_generic(raw_fair, fair_choices["text_cols"])
         X = pd.concat([X_structured.reset_index(drop=True), X_llm.reset_index(drop=True)], axis=1)
 
