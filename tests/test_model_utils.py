@@ -5,6 +5,7 @@ import pytest
 from credit_risk.features import build_features_generic, build_target_generic
 from shared.model_utils import (
     feature_importance_df,
+    get_candidate_models,
     guess_target_column,
     metrics_at_threshold,
     precision_recall_at_thresholds,
@@ -87,6 +88,22 @@ def test_train_and_compare_sanitizes_bracket_column_names(credit_df):
     assert any("<" in col for col in X.columns)  # confirm the risky column actually exists pre-fix
     comparison_df, _ = train_and_compare(X, y)
     assert len(comparison_df) > 0
+
+
+def test_xgboost_gets_scale_pos_weight_for_imbalanced_data():
+    # Regression test: XGBoost has no class_weight="balanced" option like
+    # sklearn's models — without an explicit scale_pos_weight, it silently
+    # trains unweighted and ends up nearly blind to the minority class on
+    # imbalanced data, regardless of a good-looking ROC-AUC. This confirms
+    # get_candidate_models actually sets it from the training labels.
+    y_train = pd.Series([0] * 800 + [1] * 200)
+    models = get_candidate_models(y_train)
+    assert models["XGBoost"].get_params()["scale_pos_weight"] == pytest.approx(4.0)
+
+
+def test_get_candidate_models_defaults_scale_pos_weight_to_one_without_y():
+    models = get_candidate_models()
+    assert models["XGBoost"].get_params()["scale_pos_weight"] == 1.0
 
 
 # --- feature_importance_df ---
