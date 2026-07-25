@@ -41,6 +41,19 @@ from shared.model_utils import (
     train_and_compare,
 )
 
+
+@st.cache_resource(show_spinner=False)
+def cached_train_and_compare(X: pd.DataFrame, y: pd.Series):
+    """
+    Caches on the exact contents of X and y — Streamlit hashes the actual
+    data, not just object identity, so this correctly retrains if you change
+    the uploaded file or column selections, but instantly returns cached
+    results if you click "Train" again with unchanged inputs (e.g. after
+    switching tabs and back) instead of repeating a multi-minute fit.
+    """
+    return train_and_compare(X, y)
+
+
 st.set_page_config(page_title="Responsible Credit & Fraud Risk Platform", layout="wide")
 
 # --- Sidebar: about the creator ---
@@ -289,40 +302,62 @@ with tab_credit:
 
         with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
             try:
-                comparison_df, fitted = train_and_compare(X, y)
+                comparison_df, fitted = cached_train_and_compare(X, y)
             except ValueError as e:
                 st.error(str(e))
                 st.stop()
 
-        st.markdown("#### Model comparison")
-        st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
-
         best_name = comparison_df.iloc[0]["model"]
         best_model, X_test, y_test, y_proba = fitted[best_name]
-        st.caption(f"Best model by ROC-AUC: **{best_name}**. Details below are for this model.")
+
+        model_bytes = io.BytesIO()
+        joblib.dump(best_model, model_bytes)
 
         st.session_state.training_history.append(
             {"tab": "Credit risk", "model": best_name, "roc_auc": comparison_df.iloc[0]["roc_auc"], "rows": len(raw)}
         )
 
-        render_feature_importance(feature_importance_df(best_model, list(X_test.columns)), best_name)
+        # Stored in session_state (not just local variables) so the results
+        # below survive a rerun triggered by moving the threshold slider —
+        # st.button() only returns True on the exact run right after it's
+        # clicked, so anything rendered only inside this "if" block would
+        # otherwise disappear the moment the slider is touched.
+        st.session_state["credit_trained"] = {
+            "comparison_df": comparison_df,
+            "best_name": best_name,
+            "best_model": best_model,
+            "X_test": X_test,
+            "y_test": y_test,
+            "y_proba": y_proba,
+            "model_bytes": model_bytes.getvalue(),
+        }
+
+    if st.session_state.get("credit_trained"):
+        results = st.session_state["credit_trained"]
+
+        st.markdown("#### Model comparison")
+        st.dataframe(
+            results["comparison_df"].style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}),
+            use_container_width=True, hide_index=True,
+        )
+        st.caption(f"Best model by ROC-AUC: **{results['best_name']}**. Details below are for this model.")
+
+        render_feature_importance(feature_importance_df(results["best_model"], list(results["X_test"].columns)), results["best_name"])
 
         st.markdown("#### Adjust the decision threshold")
         threshold = st.slider("Classification threshold", 0.05, 0.95, 0.5, 0.05, key="credit_threshold")
-        pr_df = precision_recall_at_thresholds(y_test, y_proba)
+        pr_df = precision_recall_at_thresholds(results["y_test"], results["y_proba"])
         render_threshold_tradeoff(pr_df, threshold)
-        live_metrics = metrics_at_threshold(y_test, y_proba, threshold)
+        live_metrics = metrics_at_threshold(results["y_test"], results["y_proba"], threshold)
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Precision", f"{live_metrics['precision']:.3f}")
         m2.metric("Recall", f"{live_metrics['recall']:.3f}")
         m3.metric("F1", f"{live_metrics['f1']:.3f}")
         m4.metric("Flagged rows", live_metrics["flagged_count"])
 
-        model_bytes = io.BytesIO()
-        joblib.dump(best_model, model_bytes)
         st.download_button(
-            f"⬇ Download trained {best_name} model (.pkl)",
-            model_bytes.getvalue(),
+            f"⬇ Download trained {results['best_name']} model (.pkl)",
+            results["model_bytes"],
             file_name="credit_risk_model.pkl",
             key="download_credit_model",
         )
@@ -375,52 +410,81 @@ with tab_fraud:
 
         with st.spinner("Training and comparing Logistic Regression, Random Forest, and XGBoost..."):
             try:
-                comparison_df, fitted = train_and_compare(X, y)
+                comparison_df, fitted = cached_train_and_compare(X, y)
             except ValueError as e:
                 st.error(str(e))
                 st.stop()
 
-        st.markdown("#### Model comparison")
-        st.dataframe(comparison_df.style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}), use_container_width=True, hide_index=True)
-
         best_name = comparison_df.iloc[0]["model"]
         best_model, X_test, y_test, y_proba = fitted[best_name]
-        st.caption(f"Best model by ROC-AUC: **{best_name}**. Details below are for this model.")
+
+        model_bytes = io.BytesIO()
+        joblib.dump(best_model, model_bytes)
 
         st.session_state.training_history.append(
             {"tab": "Fraud detection", "model": best_name, "roc_auc": comparison_df.iloc[0]["roc_auc"], "rows": len(raw_fraud)}
         )
 
-        render_feature_importance(feature_importance_df(best_model, list(X_test.columns)), best_name)
+        # Computed once here, not in the persisted rendering block below —
+        # explain_flag calls the LLM, and re-running it on every slider drag
+        # would repeatedly hit the API for no reason once a real key is set.
+        sample_top_feats, sample_explanation = None, None
+        if amount_col and hasattr(best_model, "feature_importances_"):
+            from fraud.explain import explain_flag, top_contributing_features
+
+            row = X.iloc[0]
+            sample_top_feats = top_contributing_features(best_model, row)
+            sample_explanation = explain_flag(row[amount_col], sample_top_feats)
+
+        # Stored in session_state so results survive a rerun triggered by
+        # moving the threshold slider — see the same note in the credit
+        # risk tab above for why this is necessary.
+        st.session_state["fraud_trained"] = {
+            "comparison_df": comparison_df,
+            "best_name": best_name,
+            "best_model": best_model,
+            "X_test": X_test,
+            "y_test": y_test,
+            "y_proba": y_proba,
+            "model_bytes": model_bytes.getvalue(),
+            "sample_top_feats": sample_top_feats,
+            "sample_explanation": sample_explanation,
+            "amount_col": amount_col,
+        }
+
+    if st.session_state.get("fraud_trained"):
+        results = st.session_state["fraud_trained"]
+
+        st.markdown("#### Model comparison")
+        st.dataframe(
+            results["comparison_df"].style.format({"roc_auc": "{:.4f}", "precision": "{:.4f}", "recall": "{:.4f}", "f1": "{:.4f}"}),
+            use_container_width=True, hide_index=True,
+        )
+        st.caption(f"Best model by ROC-AUC: **{results['best_name']}**. Details below are for this model.")
+
+        render_feature_importance(feature_importance_df(results["best_model"], list(results["X_test"].columns)), results["best_name"])
 
         st.markdown("#### Adjust the flagging threshold")
         threshold = st.slider("Classification threshold", 0.05, 0.95, 0.5, 0.05, key="fraud_threshold")
-        pr_df = precision_recall_at_thresholds(y_test, y_proba)
+        pr_df = precision_recall_at_thresholds(results["y_test"], results["y_proba"])
         render_threshold_tradeoff(pr_df, threshold)
-        live_metrics = metrics_at_threshold(y_test, y_proba, threshold)
+        live_metrics = metrics_at_threshold(results["y_test"], results["y_proba"], threshold)
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Precision", f"{live_metrics['precision']:.3f}")
         m2.metric("Recall", f"{live_metrics['recall']:.3f}")
         m3.metric("F1", f"{live_metrics['f1']:.3f}")
         m4.metric("Flagged rows", live_metrics["flagged_count"])
 
-        if amount_col:
+        if results["sample_top_feats"]:
             st.markdown("#### Sample flag explanation")
-            from fraud.explain import explain_flag, top_contributing_features
+            st.json(results["sample_top_feats"])
+            st.write(results["sample_explanation"])
+        elif results["amount_col"]:
+            st.caption(f"{results['best_name']} doesn't expose feature importances, so a per-row explanation isn't available for it.")
 
-            row = X.iloc[0]
-            top_feats = top_contributing_features(best_model, row) if hasattr(best_model, "feature_importances_") else {}
-            if top_feats:
-                st.json(top_feats)
-                st.write(explain_flag(row[amount_col], top_feats))
-            else:
-                st.caption(f"{best_name} doesn't expose feature importances, so a per-row explanation isn't available for it.")
-
-        model_bytes = io.BytesIO()
-        joblib.dump(best_model, model_bytes)
         st.download_button(
-            f"⬇ Download trained {best_name} model (.pkl)",
-            model_bytes.getvalue(),
+            f"⬇ Download trained {results['best_name']} model (.pkl)",
+            results["model_bytes"],
             file_name="fraud_model.pkl",
             key="download_fraud_model",
         )
@@ -466,18 +530,36 @@ with tab_fairness:
             st.stop()
         X_llm = add_llm_features_generic(raw_fair, fair_choices["text_cols"])
         X = pd.concat([X_structured.reset_index(drop=True), X_llm.reset_index(drop=True)], axis=1)
+        X.index = raw_fair.index  # keep original index so we can align the group column to the test split below
 
         if X.shape[1] == 0:
             st.error("No feature columns selected. Pick at least one categorical or numeric column above.")
             st.stop()
 
-        from sklearn.ensemble import RandomForestClassifier
+        # Reuses the same balanced, held-out-evaluated model comparison as the
+        # Credit risk / Fraud tabs, instead of a separate hand-rolled model
+        # trained and evaluated on the same data (which silently fails to
+        # learn the minority class and makes every subgroup's FNR look
+        # uniformly terrible — not a fairness finding, just an unfit model).
+        with st.spinner("Training and comparing models (balanced classes, held-out test split)..."):
+            try:
+                comparison_df, fitted = train_and_compare(X, y_true)
+            except ValueError as e:
+                st.error(str(e))
+                st.stop()
 
-        clf = RandomForestClassifier(n_estimators=300, max_depth=8, random_state=42)
-        clf.fit(X, y_true)
-        y_pred = pd.Series(clf.predict(X), index=raw_fair.index)
+        best_name = comparison_df.iloc[0]["model"]
+        best_model, X_test, y_test, y_proba = fitted[best_name]
+        y_pred = pd.Series(best_model.predict(X_test), index=X_test.index)
 
-        report = generate_report(y_true, y_pred, raw_fair[group_col], group_label=group_col)
+        st.caption(
+            f"Auditing **{best_name}** (best by ROC-AUC: {comparison_df.iloc[0]['roc_auc']:.4f}), "
+            f"evaluated on a held-out test set of {len(X_test):,} rows not seen during training — "
+            "not the training data itself, so subgroup rates reflect real generalization, not memorization."
+        )
+
+        group_test = raw_fair.loc[X_test.index, group_col]
+        report = generate_report(y_test, y_pred, group_test, group_label=group_col)
         st.markdown(report)
         st.download_button(
             "⬇ Download this fairness report (.md)",
