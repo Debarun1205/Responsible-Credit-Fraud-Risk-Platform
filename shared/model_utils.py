@@ -25,6 +25,34 @@ except ImportError:  # pragma: no cover - falls back gracefully if xgboost isn't
     _HAS_XGBOOST = False
 
 
+def guess_target_column(df: pd.DataFrame, preferred: str | None = None) -> str:
+    """
+    Picks a sensible default target column instead of blindly falling back
+    to the first column (which breaks badly if that happens to be an
+    ID/timestamp-like column with hundreds of unique values).
+
+    Priority: the caller's preferred name if present -> a common target-like
+    name (Class, target, label, y, outcome) if present -> a genuinely binary
+    column if one exists -> the lowest-cardinality non-constant column,
+    since real target columns are almost always binary/low-cardinality,
+    unlike IDs or continuous fields.
+    """
+    if preferred and preferred in df.columns:
+        return preferred
+
+    for candidate in ["Class", "class", "target", "label", "y", "outcome"]:
+        if candidate in df.columns:
+            return candidate
+
+    nunique = df.nunique()
+    binary_cols = nunique[nunique == 2]
+    if not binary_cols.empty:
+        return binary_cols.index[0]
+
+    candidates = nunique[nunique >= 2]
+    return candidates.idxmin() if not candidates.empty else nunique.idxmin()
+
+
 def get_candidate_models() -> dict:
     """
     Returns {display_name: unfitted_estimator}. XGBoost is included only if
@@ -32,7 +60,12 @@ def get_candidate_models() -> dict:
     than crashing the app, and the comparison table just has 2 rows instead of 3.
     """
     models = {
-        "Logistic Regression": LogisticRegression(max_iter=1000, class_weight="balanced"),
+        # Note: with unscaled features (raw dollar amounts next to 0/1 one-hot
+        # columns), this may print a ConvergenceWarning even at high max_iter.
+        # It's harmless here — the model still fits and scores fine — but a
+        # StandardScaler pipeline would be the correct fix if this were
+        # production rather than a comparison demo.
+        "Logistic Regression": LogisticRegression(max_iter=2000, class_weight="balanced"),
         "Random Forest": RandomForestClassifier(
             n_estimators=300, max_depth=8, random_state=42, class_weight="balanced"
         ),
