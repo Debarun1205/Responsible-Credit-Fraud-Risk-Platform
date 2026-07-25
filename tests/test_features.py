@@ -67,3 +67,24 @@ def test_build_features_generic_handles_missing_values(credit_df):
     assert credit_df["emp_title"].isna().sum() > 0
     X = build_features_generic(credit_df, categorical_cols=["emp_title"], numeric_cols=[])
     assert X.isna().sum().sum() == 0
+
+
+def test_build_features_generic_raises_on_high_cardinality_categorical():
+    # Simulates a real free-text column like emp_title at real-data scale
+    # (tens of thousands of unique values), which must not silently build
+    # a memory-crashing one-hot matrix.
+    n = 5000
+    df = pd.DataFrame({"free_text": [f"value_{i}" for i in range(n)], "num": range(n)})
+    with pytest.raises(ValueError, match="one-hot encode"):
+        build_features_generic(df, categorical_cols=["free_text"], numeric_cols=["num"])
+
+
+def test_build_features_generic_respects_custom_onehot_cap():
+    n = 100
+    df = pd.DataFrame({"cat": [f"v{i}" for i in range(n)], "num": range(n)})
+    # 100 unique values is fine under the default cap...
+    X = build_features_generic(df, categorical_cols=["cat"], numeric_cols=["num"])
+    assert X.shape[1] > 1
+    # ...but should raise under a stricter custom cap.
+    with pytest.raises(ValueError, match="one-hot encode"):
+        build_features_generic(df, categorical_cols=["cat"], numeric_cols=["num"], max_onehot_columns=10)
