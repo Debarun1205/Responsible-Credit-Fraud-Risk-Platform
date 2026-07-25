@@ -53,11 +53,17 @@ def guess_target_column(df: pd.DataFrame, preferred: str | None = None) -> str:
     return candidates.idxmin() if not candidates.empty else nunique.idxmin()
 
 
-def get_candidate_models() -> dict:
+def get_candidate_models(y_train: pd.Series | None = None) -> dict:
     """
     Returns {display_name: unfitted_estimator}. XGBoost is included only if
     the package is actually installed — if not, it's silently omitted rather
     than crashing the app, and the comparison table just has 2 rows instead of 3.
+
+    y_train, if provided, is used to compute XGBoost's scale_pos_weight.
+    XGBoost has no class_weight="balanced" option like sklearn's models --
+    it needs this ratio set explicitly, or it silently trains unweighted and
+    ends up nearly blind to the minority class on imbalanced data (e.g. a
+    ~20% default rate), regardless of a good-looking ROC-AUC.
     """
     models = {
         # Note: with unscaled features (raw dollar amounts next to 0/1 one-hot
@@ -71,8 +77,14 @@ def get_candidate_models() -> dict:
         ),
     }
     if _HAS_XGBOOST:
+        scale_pos_weight = 1.0
+        if y_train is not None:
+            counts = y_train.value_counts()
+            if 1 in counts and 0 in counts and counts[1] > 0:
+                scale_pos_weight = counts[0] / counts[1]
         models["XGBoost"] = XGBClassifier(
-            n_estimators=150, max_depth=5, learning_rate=0.1, eval_metric="logloss", random_state=42
+            n_estimators=150, max_depth=5, learning_rate=0.1, eval_metric="logloss", random_state=42,
+            scale_pos_weight=scale_pos_weight,
         )
     return models
 
@@ -113,7 +125,7 @@ def train_and_compare(X: pd.DataFrame, y: pd.Series, test_size: float = 0.25, ra
 
     rows = []
     fitted = {}
-    for name, model in get_candidate_models().items():
+    for name, model in get_candidate_models(y_train).items():
         model.fit(X_train, y_train)
         proba = model.predict_proba(X_test)[:, 1]
         preds = model.predict(X_test)
