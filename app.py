@@ -35,6 +35,7 @@ from fairness.audit import generate_report
 from shared import llm_client
 from shared.model_utils import (
     feature_importance_df,
+    guess_target_column,
     metrics_at_threshold,
     precision_recall_at_thresholds,
     train_and_compare,
@@ -78,8 +79,9 @@ if "training_history" not in st.session_state:
 
 if not llm_client.is_available():
     st.warning(
-        "No ANTHROPIC_API_KEY set — LLM Features aren't used(Due to lack of tokens & their high cost)"
-        
+        "No ANTHROPIC_API_KEY set — LLM-powered features (agentic EDA, LLM feature "
+        "extraction, fraud explanations) will run in fallback/demo mode. "
+        "Set the key in Settings → Secrets to see live results."
     )
 
 
@@ -97,36 +99,6 @@ def load_dataset(uploaded_file, default_path: str) -> tuple[pd.DataFrame, str]:
     return df, source_note
 
 
-def _guess_target_column(df: pd.DataFrame, preferred: str | None) -> str:
-    """
-    Picks a sensible default target column instead of blindly falling back
-    to the first column (which breaks badly if that happens to be an
-    ID/timestamp-like column with hundreds of unique values).
-
-    Priority: the caller's preferred name if present -> a common target-like
-    name (Class, target, label, y, outcome) if present -> the lowest-
-    cardinality column in the dataframe, since real target columns are
-    almost always binary/low-cardinality, unlike IDs or continuous fields.
-    """
-    if preferred and preferred in df.columns:
-        return preferred
-
-    for candidate in ["Class", "class", "target", "label", "y", "outcome"]:
-        if candidate in df.columns:
-            return candidate
-
-    nunique = df.nunique()
-    # Prefer a genuinely binary column if one exists — that's what a
-    # classification target almost always looks like.
-    binary_cols = nunique[nunique == 2]
-    if not binary_cols.empty:
-        return binary_cols.index[0]
-
-    # Otherwise, the lowest-cardinality column that isn't constant.
-    candidates = nunique[nunique >= 2]
-    return candidates.idxmin() if not candidates.empty else nunique.idxmin()
-
-
 def column_picker(df: pd.DataFrame, context: str, default_target: str | None = None) -> dict:
     """
     Renders the target/feature/text-column selection UI for an arbitrary
@@ -135,7 +107,7 @@ def column_picker(df: pd.DataFrame, context: str, default_target: str | None = N
     """
     columns = list(df.columns)
 
-    guessed_target = _guess_target_column(df, default_target)
+    guessed_target = guess_target_column(df, default_target)
     target_default_idx = columns.index(guessed_target)
     target_col = st.selectbox("Target column (what you're predicting)", columns, index=target_default_idx, key=f"target_{context}")
 
@@ -336,7 +308,7 @@ with tab_fraud:
     st.caption(source_note_fraud)
 
     fraud_columns = list(raw_fraud.columns)
-    fraud_guessed_target = _guess_target_column(raw_fraud, "Class")
+    fraud_guessed_target = guess_target_column(raw_fraud, "Class")
     fraud_target_default = fraud_columns.index(fraud_guessed_target)
     fraud_target_col = st.selectbox("Target column (fraud label)", fraud_columns, index=fraud_target_default, key="fraud_target")
 
