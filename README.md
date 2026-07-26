@@ -5,6 +5,11 @@ An end-to-end system that combines **agentic AI**, **machine learning**, and **d
 > **Live:** [responsible-credit-fraud-risk-platform.streamlit.app](https://responsible-credit-fraud-risk-platform.streamlit.app/)
 
 
+
+https://github.com/user-attachments/assets/e85b916d-d4c0-4e27-9166-a4756d01422c
+
+
+
 ---
 
 ## What this project does
